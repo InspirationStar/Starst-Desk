@@ -1,0 +1,1139 @@
+
+// ============================================================
+// 定义 CSS 自定义属性：颜色、圆角、间距、字号、动画时长
+// 浅色/深色双主题，通过 html.dark 选择器覆盖
+// ============================================================
+
+// ============================================================
+// 全局基础样式：html / body 必须透明，让原生 backgroundMaterial（Win11 Mica/Acrylic）材质透过
+// 关键：原生材质由 DWM 在窗口后面绘制，任何不透明背景都会遮挡材质
+// ============================================================
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+  overflow: hidden;
+}
+
+// Vue 挂载点：补全高度链，让 .widget-root 的 height:100% 能参照视口
+// 否则 #widget-app 默认 height:auto，子级百分比高度失效，窗口下方露出原生材质形成拼接
+#widget-app {
+  width: 100%;
+  height: 100%;
+}
+
+// ============================================================
+// SCSS 编译期常量（仅用于本文件内部计算）
+// ============================================================
+$widget-radius-small: 4px;   // 小圆角：标题按钮、分割线
+$widget-radius-medium: 6px;  // 中圆角：项目按钮、卡片
+$widget-radius-large: 8px;   // 大圆角：外壳、胶囊、覆盖层
+
+$widget-spacing-xs: 4px;
+$widget-spacing-sm: 8px;
+$widget-spacing-md: 12px;
+$widget-spacing-lg: 16px;
+$widget-spacing-xl: 20px;
+
+$widget-font-title: 14px;
+$widget-font-body: 13px;
+$widget-font-caption: 12px;
+$widget-font-capsule: 13px;   // 胶囊文字
+
+$widget-motion-faster: 83ms;   // 按钮反馈
+$widget-motion-fast: 167ms;    // 折叠/展开
+$widget-motion-normal: 250ms;  // 显隐
+$widget-motion-slow: 400ms;    // 大范围过渡
+
+// ============================================================
+// CSS 自定义属性：浅色模式默认值
+// ============================================================
+:root {
+  // 小部件表面
+  --widget-bg: #F3F3F3;                    // 小部件背景
+  --widget-text: #1A1A1A;                  // 主文字
+  --widget-text-secondary: #5A5A5A;        // 次要文字
+  --widget-text-tertiary: #5A5A5A;         // 辅助/占位文字（默认与次要一致，材质主题中按需覆盖）
+  --widget-drag-handle: #6B6B6B;           // 拖拽手柄
+  // 使用带 alpha 的颜色，避免单独控制 border opacity
+  --widget-divider: rgba(208, 208, 208, 0.62);
+  --widget-window-bg: transparent;         // 窗口背景
+
+  // 覆盖层（弹出面板/输入区域）
+  --widget-overlay-surface: #FBFCFD;       // 覆盖层表面
+  --widget-overlay-input: #FFFFFF;         // 覆盖层输入框
+  --widget-overlay-stroke: rgba(0, 0, 0, 0.14); // 覆盖层描边
+
+  // 层填充（半透明材质）
+  --widget-layer-fill: rgba(255, 255, 255, 0.8);    // 主层填充
+  --widget-layer-fill-secondary: rgba(255, 255, 255, 0.44); // 次层填充
+  --widget-layer-stroke: rgba(0, 0, 0, 0.09);       // 层描边
+
+  // 标题栏交互状态
+  --widget-title-hover: rgba(0, 0, 0, 0.06);   // 悬停
+  --widget-title-pressed: rgba(0, 0, 0, 0.10); // 按下
+  --widget-title-open: rgba(0, 0, 0, 0.08);    // 打开状态
+
+  // 强调色洗涤
+  --widget-accent-wash: rgba(0, 103, 192, 0.09);
+  --widget-accent: #0067C0;                    // 强调色
+
+  // Mica 回退色
+  --widget-mica-base: #FFFFFF;
+  --widget-mica-alt: #E8EAEF;
+
+  --widget-radius-small: #{$widget-radius-small};    // 4px：按钮
+  --widget-radius-medium: #{$widget-radius-medium};  // 6px：卡片
+  --widget-radius-large: #{$widget-radius-large};    // 8px：外壳/胶囊
+
+  // 四档厚度：None(0) / Thin(0.8) / Medium(1.2) / Thick(1.6)
+  // 三种颜色模式：None(transparent) / Normal(rgba) / Accent(强调色)
+  // 默认 Medium + Normal（与灵动岛亮色边框 1px solid rgba(0,0,0,0.15) 视觉接近）
+  --widget-border-thickness: 1.2px;
+  --widget-border-color: rgba(0, 0, 0, 0.12);
+  // 边框颜色模式：normal(rgba) / accent(强调色) / none(transparent)
+  --widget-border-mode: normal;
+
+  --widget-spacing-xs: #{$widget-spacing-xs};
+  --widget-spacing-sm: #{$widget-spacing-sm};
+  --widget-spacing-md: #{$widget-spacing-md};
+  --widget-spacing-lg: #{$widget-spacing-lg};
+  --widget-spacing-xl: #{$widget-spacing-xl};
+
+  --widget-font-title: #{$widget-font-title};        // 14px：标题
+  --widget-font-body: #{$widget-font-body};          // 13px：正文
+  --widget-font-caption: #{$widget-font-caption};    // 12px：说明
+  --widget-font-capsule: #{$widget-font-capsule};    // 13px：胶囊
+
+  --widget-motion-faster: #{$widget-motion-faster};  // 83ms：按钮反馈
+  --widget-motion-fast: #{$widget-motion-fast};      // 167ms：折叠/展开
+  --widget-motion-normal: #{$widget-motion-normal};  // 250ms：显隐
+  --widget-motion-slow: #{$widget-motion-slow};      // 400ms：大范围过渡
+
+  --widget-header-height: 46px;
+  --widget-header-padding: 14px 7px 12px 5px;
+  --widget-header-button-size: 24px;
+  --widget-item-button-size: 26px;
+}
+
+// ============================================================
+// 深色模式覆盖
+// ============================================================
+html.dark {
+  --widget-bg: #1F1F1F;
+  --widget-text: #F5F5F5;
+  --widget-text-secondary: #A5A5A5;
+  --widget-text-tertiary: #A5A5A5;
+  --widget-drag-handle: #D6D6D6;
+  --widget-divider: rgba(60, 60, 60, 0.62);
+  --widget-window-bg: transparent;
+
+  --widget-overlay-surface: #2A3038;
+  --widget-overlay-input: #222830;
+  --widget-overlay-stroke: rgba(255, 255, 255, 0.32);
+
+  --widget-layer-fill: rgba(255, 255, 255, 0.12);
+  --widget-layer-fill-secondary: rgba(255, 255, 255, 0.05);
+  --widget-layer-stroke: rgba(255, 255, 255, 0.12);
+
+  --widget-title-hover: rgba(255, 255, 255, 0.07);
+  --widget-title-pressed: rgba(255, 255, 255, 0.12);
+  --widget-title-open: rgba(255, 255, 255, 0.10);
+
+  --widget-accent-wash: rgba(0, 120, 212, 0.15);
+  --widget-accent: #0078D4;
+
+  --widget-mica-base: #202226;
+  --widget-mica-alt: #16181D;
+
+  --widget-border-color: rgba(255, 255, 255, 0.12);
+}
+
+// ============================================================
+// 材质主题：在 html 元素上通过 .widget-material-default / .widget-material-mica / .widget-material-acrylic 切换
+// 3 种材质：default（不透明）/ mica（云母）/ acrylic（亚克力）
+// 原生 backgroundMaterial（Win11 22H2+）提供系统材质，渲染层 CSS 仅做半透明 tint 叠加增强可读性
+// 不使用 backdrop-filter，避免与原生材质双重模糊冲突
+//   Mica 浅色 tintOpacity 0.46 / 深色 0.46
+//   Acrylic 浅色 tintOpacity 0.34 / 深色 0.42
+// 选择器优先级：html.widget-material-* > html.dark > :root
+// 通过 html.dark 与 html.widget-material-* 的交集选择器同时覆盖深色与材质
+// ============================================================
+
+// ----- default 材质：不透明背景，无原生材质 -----
+html.widget-material-default {
+  // 浅色：表面完全不透明
+  --widget-content-bg: rgba(243, 243, 243, 1);
+  // 层填充：default 材质背景已不透明，层填充改用不透明颜色
+  //   避免半透明白色 rgba(255,255,255,0.9) 叠加在 #F3F3F3 上约等于 #FDFDFD（接近白色）
+  //   主层 #FAFAFA 略亮于背景 #F3F3F3，保持卡片层次感，不是纯白
+  //   次层 #F6F6F6 介于背景和主层之间，保持次级卡片层次感
+  --widget-layer-fill: #FAFAFA;
+  --widget-layer-fill-secondary: #F6F6F6;
+  --widget-text: #1A1A1A;
+  --widget-text-secondary: #5A5A5A;
+  --widget-text-tertiary: #5A5A5A;
+  --widget-accent: #005A9E;
+}
+
+html.widget-material-default.dark {
+  // 深色：表面完全不透明
+  --widget-content-bg: rgba(31, 31, 31, 1);
+  // 层填充：深色 default 材质用不透明深色，保持卡片层次感
+  //   主层 #2A2A2A 略亮于背景 #1F1F1F，次层 #252525 介于两者之间
+  --widget-layer-fill: #2A2A2A;
+  --widget-layer-fill-secondary: #252525;
+  --widget-text: #F5F5F5;
+  --widget-text-secondary: #A5A5A5;
+  --widget-text-tertiary: #A5A5A5;
+  --widget-accent: #4CC2FF;
+}
+
+// default 材质下 .widget-root 不透明背景回退
+// 覆盖 .widget-root 默认的 transparent，使用 --widget-content-bg
+// 注：.widget-root 由 WidgetApp.vue scoped 定义为 transparent !important，
+//     此处通过 html.widget-material-default 复合选择器提升特异性以覆盖
+html.widget-material-default .widget-root {
+  background: var(--widget-content-bg) !important;
+}
+
+// ----- mica 材质：原生 backgroundMaterial='mica' + 渲染层半透明 tint 叠加 -----
+html.widget-material-mica {
+  --widget-content-bg: rgba(243, 243, 243, 0.46);
+  --widget-layer-fill: rgba(255, 255, 255, 0.6);
+  --widget-layer-fill-secondary: rgba(255, 255, 255, 0.3);
+  --widget-text: #1A1A1A;
+  --widget-text-secondary: #5A5A5A;
+  --widget-text-tertiary: #6A6A6A;
+  --widget-accent: #0067C0;
+}
+
+html.widget-material-mica.dark {
+  --widget-content-bg: rgba(31, 31, 31, 0.46);
+  --widget-layer-fill: rgba(255, 255, 255, 0.08);
+  --widget-layer-fill-secondary: rgba(255, 255, 255, 0.03);
+  --widget-text: #F5F5F5;
+  --widget-text-secondary: #A5A5A5;
+  --widget-text-tertiary: #8A8A8A;
+  --widget-accent: #0078D4;
+}
+
+// mica 材质下 .widget-root 半透明 tint 叠加 + backdrop-filter 模糊
+// Win11 22H2+：原生 backgroundMaterial 提供材质，CSS backdrop-filter 叠加增强模糊效果
+// 非 Win11 22H2+ 降级：仅靠 CSS backdrop-filter 模拟云母模糊效果（blur 30px）
+html.widget-material-mica .widget-root {
+  background: var(--widget-content-bg) !important;
+  backdrop-filter: blur(30px) saturate(1.2);
+  -webkit-backdrop-filter: blur(30px) saturate(1.2);
+}
+
+// ----- acrylic 材质：原生 backgroundMaterial='acrylic' + 渲染层半透明 tint 叠加 -----
+html.widget-material-acrylic {
+  --widget-content-bg: rgba(252, 253, 254, 0.34);
+  --widget-layer-fill: rgba(255, 255, 255, 0.7);
+  --widget-layer-fill-secondary: rgba(255, 255, 255, 0.4);
+  --widget-text: #1A1A1A;
+  --widget-text-secondary: #6A6A6A;
+  --widget-text-tertiary: #7A7A7A;
+  --widget-accent: #0067C0;
+}
+
+html.widget-material-acrylic.dark {
+  --widget-content-bg: rgba(42, 48, 56, 0.42);
+  --widget-layer-fill: rgba(255, 255, 255, 0.1);
+  --widget-layer-fill-secondary: rgba(255, 255, 255, 0.05);
+  --widget-text: #F5F5F5;
+  --widget-text-secondary: #B0B0B0;
+  --widget-text-tertiary: #9A9A9A;
+  --widget-accent: #0078D4;
+}
+
+// acrylic 材质下 .widget-root 半透明 tint 叠加 + backdrop-filter 模糊
+// Win11 22H2+：原生 backgroundMaterial 提供材质，CSS backdrop-filter 叠加增强模糊效果
+// 非 Win11 22H2+ 降级：仅靠 CSS backdrop-filter 模拟亚克力模糊效果（blur 15px）
+html.widget-material-acrylic .widget-root {
+  background: var(--widget-content-bg) !important;
+  backdrop-filter: blur(15px) saturate(1.5);
+  -webkit-backdrop-filter: blur(15px) saturate(1.5);
+}
+
+// ============================================================
+// 材质化文字可读性增强
+// mica 材质表面透明度高，标题文字加粗以提升可读性
+// ============================================================
+html.widget-material-mica {
+  // mica 通透表面下标题加粗，增强视觉层次与可读性
+  .widget-text-title {
+    font-weight: 600;
+  }
+}
+
+// ============================================================
+// 小部件根容器基础样式
+// 透明背景 + 圆角 + 内边距，由调用方按需组合
+// 关键：根容器必须透明，让原生 backgroundMaterial 材质透过
+// ============================================================
+.widget-surface {
+  // 窗口背景透明，由原生 backgroundMaterial 提供材质
+  // 使用 !important 确保不被其他样式覆盖
+  background: transparent !important;
+  border-radius: var(--widget-radius-large);
+  overflow: hidden;
+  color: var(--widget-text);
+  // 文字抗锯齿
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ============================================================
+// 内容区域半透明背景（原生材质之上的 tint 叠加）
+// 默认回退等同 mica 材质：浅色 rgba(243,243,243,0.5)  深色 rgba(31,31,31,0.5)
+// 通过 --widget-content-bg 变量控制，在浅色/深色/材质主题下分别定义
+// 材质主题覆盖见下方 html.widget-material-* 选择器
+// ============================================================
+:root {
+  --widget-content-bg: rgba(243, 243, 243, 0.5);
+}
+
+html.dark {
+  --widget-content-bg: rgba(31, 31, 31, 0.5);
+}
+
+// 内容区域容器：半透明背景 + 圆角
+// 注意：不使用 backdrop-filter，避免与原生 backgroundMaterial 双重模糊冲突
+// 原生材质（Mica/Acrylic）已由 DWM 在窗口后面绘制，此处仅做半透明 tint 叠加
+.widget-content {
+  background: var(--widget-content-bg);
+  border-radius: var(--widget-radius-large);
+  overflow: hidden;
+}
+
+// ============================================================
+// ============================================================
+.widget-title-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--widget-header-height);
+  padding: var(--widget-header-padding);
+  background: transparent;
+  border-bottom: 1px solid var(--widget-divider);
+  // 标记为 Electron 拖拽区域
+  -webkit-app-region: drag;
+}
+
+// 标题按钮：24×24px，圆角 4px
+.widget-title-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--widget-header-button-size);
+  height: var(--widget-header-button-size);
+  min-width: var(--widget-header-button-size);
+  min-height: var(--widget-header-button-size);
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: var(--widget-radius-small);
+  cursor: pointer;
+  color: var(--widget-text-secondary);
+  // 按钮在标题栏中不参与拖拽
+  -webkit-app-region: no-drag;
+  transition: background var(--widget-motion-faster) ease,
+              color var(--widget-motion-faster) ease;
+
+  &:hover {
+    background: var(--widget-title-hover);
+    color: var(--widget-text);
+  }
+
+  &:active {
+    background: var(--widget-title-pressed);
+  }
+}
+
+// 项目按钮：26×26px，圆角 6px
+.widget-item-button {
+  @extend .widget-title-button;
+  width: var(--widget-item-button-size);
+  height: var(--widget-item-button-size);
+  min-width: var(--widget-item-button-size);
+  min-height: var(--widget-item-button-size);
+  border-radius: var(--widget-radius-medium);
+}
+
+// ============================================================
+// 半透明层填充 + 层描边 + 中圆角
+// ============================================================
+.widget-layer-card {
+  background: var(--widget-layer-fill);
+  border: 1px solid var(--widget-layer-stroke);
+  border-radius: var(--widget-radius-medium);
+  transition: background var(--widget-motion-fast) ease,
+              border-color var(--widget-motion-fast) ease;
+}
+
+// 静音层卡片（次层填充）
+.widget-layer-card-quiet {
+  background: var(--widget-layer-fill-secondary);
+  border: 1px solid var(--widget-layer-stroke);
+  border-radius: var(--widget-radius-medium);
+}
+
+// ============================================================
+// 胶囊形态基础样式
+//   - 胶囊圆角 8px（大圆角）
+//   - 背景层填充（半透明）
+//   - 描边层描边
+//   - 高度 42px（summary）/52px（smart）
+// ============================================================
+.widget-capsule {
+  // 胶囊使用大圆角和层填充
+  background: var(--widget-layer-fill);
+  border: 1px solid var(--widget-layer-stroke);
+  border-radius: var(--widget-radius-large);
+  // 折叠/展开过渡
+  transition: all var(--widget-motion-fast) ease;
+}
+
+// minimal：宽度 172，高度 42
+// summary：宽度 248，高度 42
+// smart：宽度 272，高度 52
+.widget-capsule--minimal,
+.widget-capsule--summary {
+  min-height: 42px;
+}
+
+.widget-capsule--smart {
+  min-height: 52px;
+}
+
+// ============================================================
+// 滚动条样式（小部件专用，更细更低调）
+// ============================================================
+.widget-scroll {
+  // 滚动条宽度
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--widget-layer-stroke);
+    border-radius: var(--widget-radius-small);
+    transition: background var(--widget-motion-fast) ease;
+
+    &:hover {
+      background: var(--widget-drag-handle);
+    }
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
+// ============================================================
+// 通用过渡动画工具类
+// ============================================================
+.widget-transition-faster {
+  transition: all var(--widget-motion-faster) ease;
+}
+
+.widget-transition-fast {
+  transition: all var(--widget-motion-fast) ease;
+}
+
+.widget-transition-normal {
+  transition: all var(--widget-motion-normal) ease;
+}
+
+// ============================================================
+// 文字工具类
+// ============================================================
+.widget-text-primary {
+  color: var(--widget-text);
+}
+
+.widget-text-secondary {
+  color: var(--widget-text-secondary);
+}
+
+.widget-text-caption {
+  font-size: var(--widget-font-caption);
+  color: var(--widget-text-secondary);
+}
+
+.widget-text-title {
+  font-size: var(--widget-font-title);
+  font-weight: 500;
+  color: var(--widget-text);
+}
+
+.widget-text-body {
+  font-size: var(--widget-font-body);
+  color: var(--widget-text);
+}
+
+// ============================================================
+// WidgetHeader.vue 使用 scoped 样式，此处提供全局辅助样式
+// 用法：在按钮容器上添加 .widget-header__actions--hover class
+// ============================================================
+.widget-header__actions--hover {
+  opacity: 0;
+  transition: opacity var(--widget-motion-fast, 167ms) ease;
+}
+
+// 标题栏悬停时按钮区域淡入显示
+.widget-header:hover .widget-header__actions--hover {
+  opacity: 1;
+}
+
+// ============================================================
+// 三层视觉：色彩场渐变 / 边缘发光 / 底部发光条
+// 由胶囊容器按需组合使用，默认不可见，通过状态 class 或悬停触发
+// ============================================================
+
+// 用于天气、待办等彩色场景，通过设置 background 渐变 + opacity 1 显示
+.widget-capsule-color-field {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(135deg, transparent, transparent);
+  transition: opacity var(--widget-motion-normal, 250ms) ease;
+  pointer-events: none;
+}
+
+// 悬停反馈：capsule-container:hover 时 opacity 1，呈现边缘发光描边
+.widget-capsule-edge-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  opacity: 0;
+  // 浅色模式下边缘发光默认描边色（悬停时显现）
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  transition: opacity var(--widget-motion-normal, 250ms) ease;
+  pointer-events: none;
+}
+
+// 胶囊容器悬停时边缘发光显示
+.capsule-container:hover .widget-capsule-edge-glow {
+  opacity: 1;
+}
+
+// 用于音乐播放等动态场景，通过 visibility: visible 显示
+.widget-capsule-bottom-glow {
+  position: absolute;
+  bottom: 1px;
+  left: 6px;
+  right: 6px;
+  height: 2px;
+  border-radius: 1px;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+// ============================================================
+// 胶囊折叠态视觉暗色模式适配
+// 边缘发光在深色模式下使用更亮的描边色，保持可见性
+// ============================================================
+html.dark {
+  // 深色模式下边缘发光描边色提亮（悬停时显现）
+  .widget-capsule-edge-glow {
+    border-color: rgba(255, 255, 255, 0.18);
+  }
+}
+
+// ============================================================
+// Element Plus 组件背景适配（小部件窗口专用）
+// 问题：Element Plus 默认 --el-fill-color-blank=#fff（纯白），在 default 材质下
+//   .widget-root 背景 #F3F3F3 上显示为白色块（el-input/el-textarea/el-button 等）
+// 修复：让 Element Plus 背景变量跟随 --widget-content-bg，随材质自动切换
+//   default 材质：不透明主题色（#F3F3F3 浅 / #1F1F1F 深）
+//   mica/acrylic 材质：半透明，让原生材质透过
+// 注：widget.scss 在 element-plus/index.css 与 global.scss 之后加载，覆盖优先级最高
+// ============================================================
+:root {
+  // 输入框、文本域、按钮默认背景
+  --el-fill-color-blank: var(--widget-content-bg);
+  // 容器背景（el-card/el-dialog 等）
+  --el-bg-color: var(--widget-content-bg);
+  // 页面背景
+  --el-bg-color-page: var(--widget-content-bg);
+}
+
+// 浮层背景（el-select-dropdown/el-tooltip/el-popover 等）
+// 浮层需要不透明以保证可读性，default 材质用不透明主题色，mica/acrylic 用覆盖层表面色
+:root {
+  --el-bg-color-overlay: var(--widget-overlay-surface, #FBFCFD);
+}
+
+// 暗色模式下浮层背景跟随覆盖层表面色
+html.dark {
+  --el-bg-color-overlay: var(--widget-overlay-surface, #2A3038);
+}
+
+// el-input/el-textarea 在 widget 窗口中的背景跟随 --widget-content-bg
+// 覆盖 global.scss 中 html.dark .el-input__wrapper 的硬编码 #1d1e1f，
+//   统一用 --widget-content-bg 让背景随材质切换
+.el-input__wrapper,
+.el-textarea__inner {
+  background-color: var(--widget-content-bg);
+}
+
+// el-select 输入框背景跟随
+.el-select__wrapper {
+  background-color: var(--widget-content-bg);
+}
+
+// el-button 默认背景跟随（非 primary/success/warning/danger 类型）
+// Element Plus 默认 el-button 背景为 --el-fill-color-blank，已被 :root 覆盖
+// 此处显式设置确保覆盖 global.scss 深色硬编码
+.el-button:not(.is-text):not(.is-link):not(.is-disabled):not(.el-button--primary):not(.el-button--success):not(.el-button--warning):not(.el-button--danger) {
+  background-color: var(--widget-content-bg);
+}
+
+// ============================================================
+// 速度档位对应持续时间：veryFast 120 / fast 220 / standard 240 / relaxed 520 / slow 680
+// ============================================================
+:root {
+  --widget-animation-duration-very-fast: 120ms;
+  --widget-animation-duration-fast: 220ms;
+  --widget-animation-duration-standard: 240ms;
+  --widget-animation-duration-relaxed: 520ms;
+  --widget-animation-duration-slow: 680ms;
+  // 默认动画时长（standard）
+  --widget-animation-duration: var(--widget-animation-duration-standard);
+  // 动画方向偏移距离
+  --widget-animation-offset: 200px;
+}
+
+// ============================================================
+// 根据硬件性能级别（low/medium/high）调整动画帧率与批次延迟
+// ============================================================
+:root {
+  // 硬件性能级别：low / medium / high
+  --widget-hardware-level: medium;
+  // 最大帧率（跟随显示器刷新率）
+  --widget-animation-max-fps: 60;
+  // 批次分组延迟（毫秒）
+  --widget-animation-batch-delay: 5ms;
+  // 是否启用批次分组
+  --widget-animation-batch-grouping: 1;
+  // 是否启用 GPU Turbo 模式
+  --widget-animation-gpu-turbo: 0;
+}
+
+// 低性能硬件：增大批次延迟防止卡顿
+html.widget-hardware-low {
+  --widget-hardware-level: low;
+  --widget-animation-batch-delay: 8ms;
+}
+
+// 中等性能硬件
+html.widget-hardware-medium {
+  --widget-hardware-level: medium;
+  --widget-animation-batch-delay: 5ms;
+}
+
+// 高性能硬件：最小延迟保证流畅
+html.widget-hardware-high {
+  --widget-hardware-level: high;
+  --widget-animation-batch-delay: 5ms;
+}
+
+// ============================================================
+// 效果：none / fade / slideRight / slideLeft / slideUp / slideDown /
+//       scaleFade / slideFade / zoom / slideUpFade / slideDownFade /
+//       slideLeftFade / slideRightFade / scaleSlide
+// ============================================================
+
+// 淡入淡出
+@keyframes widget-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes widget-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+// 缩放淡入淡出
+@keyframes widget-scale-fade-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes widget-scale-fade-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.96); }
+}
+
+// 缩放滑动
+@keyframes widget-scale-slide-in {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes widget-scale-slide-out {
+  from { opacity: 1; transform: scale(1) translateY(0); }
+  to { opacity: 0; transform: scale(0.92) translateY(8px); }
+}
+
+// 放大
+@keyframes widget-zoom-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes widget-zoom-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.85); }
+}
+
+// 右滑淡入
+@keyframes widget-slide-fade-in-right {
+  from { opacity: 0; transform: translateX(var(--widget-animation-offset)); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes widget-slide-fade-out-right {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(var(--widget-animation-offset)); }
+}
+
+// 左滑淡入
+@keyframes widget-slide-fade-in-left {
+  from { opacity: 0; transform: translateX(calc(-1 * var(--widget-animation-offset))); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes widget-slide-fade-out-left {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(calc(-1 * var(--widget-animation-offset))); }
+}
+
+// 上滑淡入
+@keyframes widget-slide-fade-in-up {
+  from { opacity: 0; transform: translateY(calc(-1 * var(--widget-animation-offset))); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes widget-slide-fade-out-up {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(calc(-1 * var(--widget-animation-offset))); }
+}
+
+// 下滑淡入
+@keyframes widget-slide-fade-in-down {
+  from { opacity: 0; transform: translateY(var(--widget-animation-offset)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes widget-slide-fade-out-down {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(var(--widget-animation-offset)); }
+}
+
+// ============================================================
+// 通过 .widget-animate--<effect>--<enter|exit> 组合使用
+// ============================================================
+.widget-animate--fade--enter {
+  animation: widget-fade-in var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--fade--exit {
+  animation: widget-fade-out var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--scaleFade--enter {
+  animation: widget-scale-fade-in var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--scaleFade--exit {
+  animation: widget-scale-fade-out var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--scaleSlide--enter {
+  animation: widget-scale-slide-in var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--scaleSlide--exit {
+  animation: widget-scale-slide-out var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--zoom--enter {
+  animation: widget-zoom-in var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--zoom--exit {
+  animation: widget-zoom-out var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideFade--enter {
+  animation: widget-slide-fade-in-right var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideFade--exit {
+  animation: widget-slide-fade-out-right var(--widget-animation-duration) ease both;
+}
+
+// 方向变体：slideRight / slideLeft / slideUp / slideDown
+.widget-animate--slideRight--enter {
+  animation: widget-slide-fade-in-right var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideRight--exit {
+  animation: widget-slide-fade-out-right var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideLeft--enter {
+  animation: widget-slide-fade-in-left var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideLeft--exit {
+  animation: widget-slide-fade-out-left var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideUp--enter {
+  animation: widget-slide-fade-in-up var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideUp--exit {
+  animation: widget-slide-fade-out-up var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideDown--enter {
+  animation: widget-slide-fade-in-down var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideDown--exit {
+  animation: widget-slide-fade-out-down var(--widget-animation-duration) ease both;
+}
+
+// 复合方向变体：slideRightFade / slideLeftFade / slideUpFade / slideDownFade
+.widget-animate--slideRightFade--enter {
+  animation: widget-slide-fade-in-right var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideRightFade--exit {
+  animation: widget-slide-fade-out-right var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideLeftFade--enter {
+  animation: widget-slide-fade-in-left var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideLeftFade--exit {
+  animation: widget-slide-fade-out-left var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideUpFade--enter {
+  animation: widget-slide-fade-in-up var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideUpFade--exit {
+  animation: widget-slide-fade-out-up var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideDownFade--enter {
+  animation: widget-slide-fade-in-down var(--widget-animation-duration) ease both;
+}
+
+.widget-animate--slideDownFade--exit {
+  animation: widget-slide-fade-out-down var(--widget-animation-duration) ease both;
+}
+
+// ============================================================
+// 最小安全宽度 96px：避免父级瞬时压缩导致子项负宽度
+// ============================================================
+$widget-segmented-min-safe-width: 96px;
+
+// 分段容器：内联弹性布局，等宽分配
+.widget-segmented {
+  display: inline-flex;
+  align-items: stretch;
+  min-width: $widget-segmented-min-safe-width;
+  border-radius: var(--widget-radius-medium);
+  overflow: hidden;
+  background: var(--widget-layer-fill-secondary);
+  // 分段项之间间距
+  gap: 2px;
+  padding: 2px;
+}
+
+// 分段项：默认自然宽度
+.widget-segmented__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 4px;
+  border: none;
+  background: transparent;
+  border-radius: var(--widget-radius-small);
+  color: var(--widget-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--widget-motion-faster) ease,
+              color var(--widget-motion-faster) ease;
+
+  &:hover {
+    background: var(--widget-title-hover);
+    color: var(--widget-text);
+  }
+
+  &.is-active {
+    background: var(--widget-layer-fill);
+    color: var(--widget-text);
+    font-weight: 500;
+  }
+}
+
+// 等宽模式：所有可见分段项等宽分配
+//   padding (4,1,4,2)，minHeight = max(24, segmented.MinHeight - 3)
+.widget-segmented--equal {
+  .widget-segmented__item {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 1px 4px 2px 4px;
+    min-height: 24px;
+  }
+}
+
+// 按钮样式（button 风格）：清除分段样式，使用按钮默认外观
+.widget-segmented--button {
+  background: transparent;
+  gap: var(--widget-spacing-xs);
+  padding: 0;
+
+  .widget-segmented__item {
+    border-radius: var(--widget-radius-medium);
+    padding: 4px 8px;
+
+    &.is-active {
+      background: var(--widget-accent-wash);
+      color: var(--widget-accent);
+    }
+  }
+}
+
+// Pivot 样式：底部下划线指示器
+.widget-segmented--pivot {
+  background: transparent;
+  gap: var(--widget-spacing-sm);
+  padding: 0;
+  border-bottom: 1px solid var(--widget-divider);
+  border-radius: 0;
+
+  .widget-segmented__item {
+    border-radius: 0;
+    padding: 6px 12px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+
+    &.is-active {
+      background: transparent;
+      border-bottom-color: var(--widget-accent);
+      color: var(--widget-text);
+      font-weight: 500;
+    }
+  }
+}
+
+// ============================================================
+// 基于 CSS transition 实现折叠/展开过渡，由 JS 协调器控制时序
+// ============================================================
+
+// 胶囊展开过渡：宽度/高度/圆角/透明度同时过渡
+.capsule-container {
+  // 硬件自适应：根据性能级别调整过渡时长
+  // 低性能硬件使用更长的基础时长避免卡顿
+  transition: width var(--widget-motion-fast) ease,
+              height var(--widget-motion-fast) ease,
+              opacity var(--widget-motion-fast) ease,
+              transform var(--widget-motion-fast) ease,
+              border-radius var(--widget-motion-fast) ease;
+}
+
+// 低性能硬件：延长过渡时长
+html.widget-hardware-low .capsule-container {
+  transition-duration: var(--widget-motion-normal);
+}
+
+// 胶囊预热状态：冷启动时延迟首次绘制
+.capsule-container.is-warming-up {
+  opacity: 0;
+  pointer-events: none;
+}
+
+// 胶囊动画进行中：禁用悬停反馈避免视觉干扰
+.capsule-container.is-animating {
+  pointer-events: none;
+}
+
+// ============================================================
+// 可见空闲状态：降低非活跃胶囊的视觉优先级，配合内存回收
+// ============================================================
+
+// 可见空闲状态：胶囊仍可见但应用空闲
+//   有可见小部件 + 无交互 + 无设置/引导/搜索弹窗 + 非前台 + 无悬停
+.capsule-container.is-visible-idle {
+  // 空闲时不改变可见性，仅标记用于内存追踪
+  // 实际内存回收由 JS 策略判断触发
+  will-change: auto;
+}
+
+// 隐藏空闲状态：小部件不可见时可裁剪工作集
+//   无可见小部件 + 无交互 + 无设置/引导/搜索弹窗 + 非前台 + 无悬停
+.capsule-container.is-hidden-idle {
+  // 离屏时降低合成层优先级
+  content-visibility: auto;
+  contain-intrinsic-size: 248px 42px;
+}
+
+// ============================================================
+// ============================================================
+.widget-perf-mark {
+  // 默认不可见，仅调试模式显示
+  display: none;
+}
+
+// 调试模式：显示性能标记
+html.widget-perf-debug .widget-perf-mark {
+  display: inline-flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 4px;
+  font-size: 10px;
+  color: var(--widget-accent);
+  background: var(--widget-accent-wash);
+  border-radius: 0 0 0 var(--widget-radius-small);
+  pointer-events: none;
+  z-index: 100;
+}
+
+// ============================================================
+// 通过 is-expanding / is-collapsing 状态 class 触发
+// 复用 --widget-animation-duration CSS 变量（由 CapsuleContainer animationStyle 注入）
+// ============================================================
+
+// 胶囊展开关键帧：从胶囊尺寸（小宽度/小高度/半透明）过渡到展开尺寸（全宽度/全高度/不透明）
+@keyframes widget-capsule-expand {
+  from {
+    opacity: 0.6;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// 胶囊折叠关键帧：从展开尺寸过渡到胶囊尺寸
+@keyframes widget-capsule-collapse {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0.6;
+    transform: scale(0.92);
+  }
+}
+
+// 胶囊展开状态：播放展开关键帧动画
+// 同时保留 width/height/opacity 的 CSS transition 以处理实际尺寸变化
+.capsule-container.is-expanding {
+  animation: widget-capsule-expand var(--widget-animation-duration, 200ms) ease both;
+  transition: width var(--widget-animation-duration, 200ms) ease,
+              height var(--widget-animation-duration, 200ms) ease,
+              opacity var(--widget-animation-duration, 200ms) ease,
+              transform var(--widget-animation-duration, 200ms) ease;
+  // 提升合成层优先级，避免过渡期间抖动
+  will-change: width, height, opacity, transform;
+}
+
+// 胶囊折叠状态：播放折叠关键帧动画
+.capsule-container.is-collapsing {
+  animation: widget-capsule-collapse var(--widget-animation-duration, 200ms) ease both;
+  transition: width var(--widget-animation-duration, 200ms) ease,
+              height var(--widget-animation-duration, 200ms) ease,
+              opacity var(--widget-animation-duration, 200ms) ease,
+              transform var(--widget-animation-duration, 200ms) ease;
+  will-change: width, height, opacity, transform;
+}
+
+// ============================================================
+// 暗色模式下胶囊展开/折叠动画一致性
+// 动画关键帧与过渡时长不随主题变化，仅 opacity 起点略调整以保持视觉协调
+// ============================================================
+html.dark {
+  // 暗色模式下展开起始 opacity 略低（深色背景下半透明更明显）
+  .capsule-container.is-expanding {
+    animation-name: widget-capsule-expand;
+  }
+  .capsule-container.is-collapsing {
+    animation-name: widget-capsule-collapse;
+  }
+}
+
+// ============================================================
+// 硬件自适应：低性能硬件延长胶囊展开/折叠过渡时长
+// 与 .capsule-container 基础过渡一致，避免高负载下卡顿
+// ============================================================
+html.widget-hardware-low {
+  .capsule-container.is-expanding,
+  .capsule-container.is-collapsing {
+    transition-duration: var(--widget-motion-normal, 250ms);
+    animation-duration: var(--widget-motion-normal, 250ms);
+  }
+}
+
+// ============================================================
+// 用户偏好：尊重 prefers-reduced-motion
+// 用户在系统设置中禁用动画时，胶囊展开/折叠不过渡，直接切换
+// 同时禁用关键帧动画，仅保留瞬态切换
+// ============================================================
+@media (prefers-reduced-motion: reduce) {
+  .capsule-container.is-expanding,
+  .capsule-container.is-collapsing {
+    // 禁用过渡与动画
+    transition: none;
+    animation: none;
+    // 移除 will-change 避免不必要的合成层
+    will-change: auto;
+  }
+
+  // 同时禁用基础胶囊过渡，确保全局一致
+  .capsule-container {
+    transition: none;
+  }
+}
+
+// ============================================================
+// 三种颜色模式：none(transparent) / normal(rgba) / accent(强调色)
+// 通过 html.widget-border-{mode} class 切换，由渲染层 applyMaterialClass 应用
+// ============================================================
+html.widget-border-none {
+  --widget-border-color: transparent;
+}
+html.widget-border-accent {
+  --widget-border-color: var(--widget-accent);
+}
+
+// ============================================================
+// 系统高对比度模式下强制前景色边框，确保轮廓清晰
+// ============================================================
+@media (prefers-contrast: high) {
+  :root {
+    --widget-border-thickness: 2px;
+    --widget-border-color: CurrentColor;
+  }
+}

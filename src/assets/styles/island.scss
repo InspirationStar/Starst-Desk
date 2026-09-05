@@ -1,0 +1,57 @@
+// 灵动岛样式
+// 全局基础样式与主题 CSS 变量定义，组件级样式在各个 .vue 文件中 scoped
+// 主题适配：灵动岛跟随应用主题（light/dark），通过 CSS 变量实现
+//   - 亮色主题：浅灰卡片 + 深色文字（默认）
+//   - 暗色主题：深色卡片 + 浅色文字（html.dark 覆盖）
+// 变量定义在 :root 上，确保 scoped 子组件能直接访问，不依赖继承链
+
+// 亮色主题（默认）：白色背景 + 明显边框 + 强阴影，确保在任何浅色背景上轮廓清晰
+:root {
+  --island-card-bg: rgba(255, 255, 255, 0.96);
+  --island-card-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.15);
+  --island-card-border: 1px solid rgba(0, 0, 0, 0.15);
+  --island-text-primary: rgba(0, 0, 0, 0.88);
+  --island-text-title: rgba(0, 0, 0, 0.92);
+  --island-text-secondary: rgba(0, 0, 0, 0.55);
+  --island-text-tertiary: rgba(0, 0, 0, 0.38);
+  --island-action-bg: rgba(0, 0, 0, 0.06);
+  --island-action-bg-hover: rgba(0, 0, 0, 0.1);
+  --island-close-color: rgba(0, 0, 0, 0.45);
+  --island-close-color-hover: rgba(0, 0, 0, 0.75);
+  --island-close-bg-hover: rgba(0, 0, 0, 0.06);
+  --island-progress-bg: rgba(0, 0, 0, 0.08);
+  --island-skip-bg: rgba(0, 0, 0, 0.04);
+  --island-skip-bg-hover: rgba(0, 0, 0, 0.08);
+  --island-skip-color: rgba(0, 0, 0, 0.5);
+  --island-skip-color-hover: rgba(0, 0, 0, 0.8);
+}
+
+// 暗色主题覆盖
+html.dark {
+  --island-card-bg: rgba(32, 32, 32, 0.92);
+  --island-card-shadow: 0 4px 16px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.12);
+  --island-card-border: none;
+  --island-text-primary: rgba(255, 255, 255, 0.92);
+  --island-text-title: rgba(255, 255, 255, 0.95);
+  --island-text-secondary: rgba(255, 255, 255, 0.72);
+  --island-text-tertiary: rgba(255, 255, 255, 0.5);
+  --island-action-bg: rgba(255, 255, 255, 0.12);
+  --island-action-bg-hover: rgba(255, 255, 255, 0.2);
+  --island-close-color: rgba(255, 255, 255, 0.55);
+  --island-close-color-hover: rgba(255, 255, 255, 0.85);
+  --island-close-bg-hover: rgba(255, 255, 255, 0.1);
+  --island-progress-bg: rgba(255, 255, 255, 0.12);
+  --island-skip-bg: rgba(255, 255, 255, 0.08);
+  --island-skip-bg-hover: rgba(255, 255, 255, 0.15);
+  --island-skip-color: rgba(255, 255, 255, 0.6);
+  --island-skip-color-hover: rgba(255, 255, 255, 0.9);
+}
+
+.island-root {
+  // 窗口根节点透明，让卡片自绘背景
+  background: transparent;
+  // 禁止选中
+  user-select: none;
+  // 禁止拖拽
+  -webkit-app-region: no-drag;
+}

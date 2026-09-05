@@ -1,0 +1,9 @@
+// 提醒窗口样式
+.reminder-window {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  width: 360px;
+  user-select: none;
+}

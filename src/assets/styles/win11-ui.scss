@@ -1,0 +1,610 @@
+// ============================================================
+// 提供 Mica、Acrylic 材质效果及 Win11 设计规范
+// ============================================================
+
+// ============================================================
+// Mica 材质
+// Windows 11 主材质，半透明背景配合微妙颜色偏移
+// ============================================================
+
+// 浅色 Mica
+@mixin mica-light {
+  background: linear-gradient(
+    135deg,
+    rgba(243, 243, 243, 0.85) 0%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+  backdrop-filter: blur(20px) saturate(125%);
+  -webkit-backdrop-filter: blur(20px) saturate(125%);
+}
+
+// 深色 Mica
+@mixin mica-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(31, 31, 31, 0.85) 0%,
+    rgba(45, 45, 45, 0.9) 100%
+  );
+  backdrop-filter: blur(20px) saturate(125%);
+  -webkit-backdrop-filter: blur(20px) saturate(125%);
+}
+
+// Mica 材质类
+.widget-material-mica {
+  @include mica-light;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+html.dark .widget-material-mica {
+  @include mica-dark;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+// ============================================================
+// Acrylic 材质
+// 更强模糊效果的半透明材质
+// ============================================================
+
+// 浅色 Acrylic
+@mixin acrylic-light {
+  background: rgba(252, 253, 254, 0.7);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+}
+
+// 深色 Acrylic
+@mixin acrylic-dark {
+  background: rgba(42, 48, 56, 0.7);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+}
+
+// Acrylic 材质类
+.widget-material-acrylic {
+  @include acrylic-light;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+html.dark .widget-material-acrylic {
+  @include acrylic-dark;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+// ============================================================
+// 纯色回退材质
+// 用于不支持透明材质的环境（如 Windows 10）
+// ============================================================
+
+.widget-material-none,
+.widget-material-solid {
+  background: var(--widget-bg, #F3F3F3);
+  border: 1px solid var(--widget-divider, rgba(208, 208, 208, 0.62));
+}
+
+html.dark .widget-material-none,
+html.dark .widget-material-solid {
+  background: var(--widget-bg, #1F1F1F);
+  border: 1px solid var(--widget-divider, rgba(60, 60, 60, 0.62));
+}
+
+// ============================================================
+// ============================================================
+
+// 圆角变量
+$win11-radius-small: 4px;
+$win11-radius-medium: 6px;
+$win11-radius-large: 8px;
+$win11-radius-xlarge: 12px;
+
+// 圆角工具类
+.win11-radius-sm {
+  border-radius: $win11-radius-small;
+}
+
+.win11-radius-md {
+  border-radius: $win11-radius-medium;
+}
+
+.win11-radius-lg {
+  border-radius: $win11-radius-large;
+}
+
+.win11-radius-xl {
+  border-radius: $win11-radius-xlarge;
+}
+
+// ============================================================
+// DWM 原生圆角
+// Windows 11 窗口原生圆角效果
+// 需要在 Electron 窗口设置中配合使用
+// ============================================================
+
+.win11-rounded-corners {
+  // 此处在 CSS 层面提供回退，实际效果由 Electron 窗口设置决定
+  border-radius: $win11-radius-large;
+  overflow: hidden;
+}
+
+// ============================================================
+// ============================================================
+
+$win11-spacing-xs: 4px;
+$win11-spacing-sm: 8px;
+$win11-spacing-md: 12px;
+$win11-spacing-lg: 16px;
+$win11-spacing-xl: 20px;
+$win11-spacing-xxl: 24px;
+
+// 间距工具类
+.win11-space-xs { padding: $win11-spacing-xs; }
+.win11-space-sm { padding: $win11-spacing-sm; }
+.win11-space-md { padding: $win11-spacing-md; }
+.win11-space-lg { padding: $win11-spacing-lg; }
+.win11-space-xl { padding: $win11-spacing-xl; }
+
+.win11-gap-xs { gap: $win11-spacing-xs; }
+.win11-gap-sm { gap: $win11-spacing-sm; }
+.win11-gap-md { gap: $win11-spacing-md; }
+.win11-gap-lg { gap: $win11-spacing-lg; }
+.win11-gap-xl { gap: $win11-spacing-xl; }
+
+// ============================================================
+// ============================================================
+
+$win11-font-title: 14px;
+$win11-font-body: 13px;
+$win11-font-caption: 12px;
+$win11-font-capsule: 13px;
+
+// 字体工具类
+.win11-font-title {
+  font-size: $win11-font-title;
+  font-weight: 600;
+}
+
+.win11-font-body {
+  font-size: $win11-font-body;
+}
+
+.win11-font-caption {
+  font-size: $win11-font-caption;
+  color: var(--widget-text-secondary, #5A5A5A);
+}
+
+// ============================================================
+// ============================================================
+
+$win11-motion-faster: 83ms;
+$win11-motion-fast: 167ms;
+$win11-motion-normal: 250ms;
+$win11-motion-slow: 400ms;
+
+// 动画工具类
+.win11-transition-fast {
+  transition: all $win11-motion-fast ease;
+}
+
+.win11-transition-normal {
+  transition: all $win11-motion-normal ease;
+}
+
+.win11-transition-slow {
+  transition: all $win11-motion-slow ease;
+}
+
+// ============================================================
+// ============================================================
+
+// 浅色模式默认值
+:root {
+  --win11-text-primary: #1A1A1A;
+  --win11-text-secondary: #5A5A5A;
+  --win11-text-tertiary: #5A5A5A;
+  --win11-accent: #0067C0;
+  --win11-accent-wash: rgba(0, 103, 192, 0.09);
+  --win11-divider: rgba(208, 208, 208, 0.62);
+  --win11-hover: rgba(0, 0, 0, 0.04);
+  --win11-pressed: rgba(0, 0, 0, 0.08);
+}
+
+// 深色模式覆盖
+html.dark {
+  --win11-text-primary: #F5F5F5;
+  --win11-text-secondary: #A5A5A5;
+  --win11-text-tertiary: #A5A5A5;
+  --win11-accent: #0078D4;
+  --win11-accent-wash: rgba(0, 120, 212, 0.15);
+  --win11-divider: rgba(60, 60, 60, 0.62);
+  --win11-hover: rgba(255, 255, 255, 0.06);
+  --win11-pressed: rgba(255, 255, 255, 0.10);
+}
+
+// ============================================================
+// 卡片组件样式
+// ============================================================
+
+.win11-card {
+  background: var(--widget-layer-fill, rgba(255, 255, 255, 0.8));
+  border: 1px solid var(--widget-layer-stroke, rgba(0, 0, 0, 0.09));
+  border-radius: $win11-radius-medium;
+  padding: $win11-spacing-md;
+  @include win11-card-shadow;
+}
+
+html.dark .win11-card {
+  background: var(--widget-layer-fill, rgba(255, 255, 255, 0.12));
+  border: 1px solid var(--widget-layer-stroke, rgba(255, 255, 255, 0.12));
+}
+
+@mixin win11-card-shadow {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
+              0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+html.dark .win11-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+// ============================================================
+// 按钮样式
+// ============================================================
+
+.win11-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $win11-spacing-xs;
+  padding: $win11-spacing-xs $win11-spacing-sm;
+  height: 32px;
+  min-width: 32px;
+  border: 1px solid transparent;
+  border-radius: $win11-radius-small;
+  background: transparent;
+  color: var(--win11-text-primary, #1A1A1A);
+  font-size: $win11-font-body;
+  cursor: pointer;
+  transition: all $win11-motion-faster ease;
+  outline: none;
+
+  &:hover {
+    background: var(--win11-hover, rgba(0, 0, 0, 0.04));
+  }
+
+  &:active {
+    background: var(--win11-pressed, rgba(0, 0, 0, 0.08));
+  }
+
+  &:focus-visible {
+    border-color: var(--win11-accent, #0067C0);
+    box-shadow: 0 0 0 2px var(--win11-accent-wash, rgba(0, 103, 192, 0.09));
+  }
+}
+
+html.dark .win11-button {
+  color: var(--win11-text-primary, #F5F5F5);
+
+  &:hover {
+    background: var(--win11-hover, rgba(255, 255, 255, 0.06));
+  }
+
+  &:active {
+    background: var(--win11-pressed, rgba(255, 255, 255, 0.10));
+  }
+}
+
+// 主按钮
+.win11-button-primary {
+  background: var(--win11-accent, #0067C0);
+  color: #FFFFFF;
+  border-color: var(--win11-accent, #0067C0);
+
+  &:hover {
+    background: darken(var(--win11-accent, #0067C0), 5%);
+    border-color: darken(var(--win11-accent, #0067C0), 5%);
+  }
+}
+
+// ============================================================
+// 输入框样式
+// ============================================================
+
+.win11-input {
+  width: 100%;
+  height: 32px;
+  padding: 0 $win11-spacing-sm;
+  border: 1px solid var(--widget-divider, rgba(208, 208, 208, 0.62));
+  border-radius: $win11-radius-small;
+  background: var(--widget-overlay-input, #FFFFFF);
+  color: var(--win11-text-primary, #1A1A1A);
+  font-size: $win11-font-body;
+  outline: none;
+  transition: border-color $win11-motion-fast ease;
+
+  &::placeholder {
+    color: var(--win11-text-tertiary, #5A5A5A);
+  }
+
+  &:hover {
+    border-color: var(--win11-accent, #0067C0);
+  }
+
+  &:focus {
+    border-color: var(--win11-accent, #0067C0);
+    box-shadow: 0 0 0 1px var(--win11-accent, #0067C0);
+  }
+}
+
+html.dark .win11-input {
+  background: var(--widget-overlay-input, #222830);
+  border-color: var(--widget-divider, rgba(60, 60, 60, 0.62));
+  color: var(--win11-text-primary, #F5F5F5);
+
+  &::placeholder {
+    color: var(--win11-text-tertiary, #A5A5A5);
+  }
+
+  &:hover {
+    border-color: var(--win11-accent, #0078D4);
+  }
+
+  &:focus {
+    border-color: var(--win11-accent, #0078D4);
+    box-shadow: 0 0 0 1px var(--win11-accent, #0078D4);
+  }
+}
+
+// ============================================================
+// 分割线样式
+// ============================================================
+
+.win11-divider {
+  height: 1px;
+  background: var(--win11-divider, rgba(208, 208, 208, 0.62));
+  margin: $win11-spacing-md 0;
+}
+
+html.dark .win11-divider {
+  background: var(--win11-divider, rgba(60, 60, 60, 0.62));
+}
+
+// ============================================================
+// 滚动条样式（Win11 风格）
+// ============================================================
+
+.win11-scrollbar {
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--widget-drag-handle, #6B6B6B);
+    border-radius: 2px;
+
+    &:hover {
+      background: var(--widget-drag-handle, #6B6B6B);
+      opacity: 0.8;
+    }
+  }
+}
+
+html.dark .win11-scrollbar {
+  &::-webkit-scrollbar-thumb {
+    background: var(--widget-drag-handle, #D6D6D6);
+  }
+}
+
+// ============================================================
+// 选择器样式
+// ============================================================
+
+.win11-select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 $win11-spacing-sm;
+  border: 1px solid var(--widget-divider, rgba(208, 208, 208, 0.62));
+  border-radius: $win11-radius-small;
+  background: var(--widget-overlay-input, #FFFFFF);
+  color: var(--win11-text-primary, #1A1A1A);
+  font-size: $win11-font-body;
+  cursor: pointer;
+  transition: all $win11-motion-fast ease;
+  outline: none;
+
+  &:hover {
+    border-color: var(--win11-accent, #0067C0);
+  }
+
+  &:focus {
+    border-color: var(--win11-accent, #0067C0);
+    box-shadow: 0 0 0 1px var(--win11-accent, #0067C0);
+  }
+
+  &::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid currentColor;
+    margin-left: $win11-spacing-xs;
+  }
+}
+
+html.dark .win11-select {
+  background: var(--widget-overlay-input, #222830);
+  border-color: var(--widget-divider, rgba(60, 60, 60, 0.62));
+  color: var(--win11-text-primary, #F5F5F5);
+
+  &:hover {
+    border-color: var(--win11-accent, #0078D4);
+  }
+
+  &:focus {
+    border-color: var(--win11-accent, #0078D4);
+    box-shadow: 0 0 0 1px var(--win11-accent, #0078D4);
+  }
+}
+
+// ============================================================
+// 复选框样式
+// ============================================================
+
+.win11-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: $win11-spacing-xs;
+  cursor: pointer;
+  font-size: $win11-font-body;
+  color: var(--win11-text-primary, #1A1A1A);
+
+  input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--widget-divider, rgba(208, 208, 208, 0.62));
+    border-radius: 2px;
+    background: var(--widget-overlay-input, #FFFFFF);
+    cursor: pointer;
+    outline: none;
+    transition: all $win11-motion-faster ease;
+
+    &:checked {
+      background: var(--win11-accent, #0067C0);
+      border-color: var(--win11-accent, #0067C0);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 10'%3E%3Cpath d='M1.5 5L5 8.5L10.5 1.5' stroke='white' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-size: 10px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px var(--win11-accent-wash, rgba(0, 103, 192, 0.09));
+    }
+  }
+}
+
+html.dark .win11-checkbox {
+  color: var(--win11-text-primary, #F5F5F5);
+
+  input[type='checkbox'] {
+    background: var(--widget-overlay-input, #222830);
+    border-color: var(--widget-divider, rgba(60, 60, 60, 0.62));
+
+    &:checked {
+      background: var(--win11-accent, #0078D4);
+      border-color: var(--win11-accent, #0078D4);
+    }
+  }
+}
+
+// ============================================================
+// 开关样式
+// ============================================================
+
+.win11-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .win11-switch-slider {
+      background-color: var(--win11-accent, #0067C0);
+    }
+
+    &:focus + .win11-switch-slider {
+      box-shadow: 0 0 0 2px var(--win11-accent-wash, rgba(0, 103, 192, 0.09));
+    }
+
+    &:checked:focus + .win11-switch-slider {
+      box-shadow: 0 0 0 2px var(--win11-accent-wash, rgba(0, 103, 192, 0.09));
+    }
+  }
+
+  &-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--widget-divider, rgba(208, 208, 208, 0.62));
+    transition: $win11-motion-fast;
+    border-radius: 10px;
+
+    &::before {
+      position: absolute;
+      content: '';
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: $win11-motion-fast;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &:checked &-slider {
+    background-color: var(--win11-accent, #0067C0);
+  }
+
+  &:checked &-slider::before {
+    transform: translateX(20px);
+  }
+}
+
+html.dark .win11-switch {
+  input:checked + .win11-switch-slider {
+    background-color: var(--win11-accent, #0078D4);
+  }
+}
+
+// ============================================================
+// 工具类汇总
+// ============================================================
+
+// 材质类
+.win11-mica {
+  @include mica-light;
+}
+
+html.dark .win11-mica {
+  @include mica-dark;
+}
+
+.win11-acrylic {
+  @include acrylic-light;
+}
+
+html.dark .win11-acrylic {
+  @include acrylic-dark;
+}
+
+// 文字颜色
+.win11-text-primary { color: var(--win11-text-primary, #1A1A1A); }
+.win11-text-secondary { color: var(--win11-text-secondary, #5A5A5A); }
+.win11-text-tertiary { color: var(--win11-text-tertiary, #5A5A5A); }
+
+html.dark .win11-text-primary { color: var(--win11-text-primary, #F5F5F5); }
+html.dark .win11-text-secondary { color: var(--win11-text-secondary, #A5A5A5); }
+html.dark .win11-text-tertiary { color: var(--win11-text-tertiary, #A5A5A5); }
+
+// 强调色
+.win11-accent-text { color: var(--win11-accent, #0067C0); }
+.win11-accent-bg { background-color: var(--win11-accent, #0067C0); }
+
+html.dark .win11-accent-text { color: var(--win11-accent, #0078D4); }
+html.dark .win11-accent-bg { background-color: var(--win11-accent, #0078D4); }

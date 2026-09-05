@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>区域截图</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100vw; height: 100vh; overflow: hidden; cursor: crosshair; user-select: none; background: transparent; }
+    .cross-h { position: fixed; left:0; right:0; height:1px; background:rgba(64,158,255,0.6); pointer-events:none; z-index:150; }
+    .cross-v { position: fixed; top:0; bottom:0; width:1px; background:rgba(64,158,255,0.6); pointer-events:none; z-index:150; }
+    .mask { position: absolute; background: rgba(0,0,0,0.55); pointer-events: none; z-index: 50; }
+    .mask-top    { left:0; right:0; top:0; }
+    .mask-bottom { left:0; right:0; bottom:0; }
+    .mask-left   { left:0; top:0; height:100%; }
+    .mask-right  { right:0; top:0; height:100%; }
+    .sel-border { position: absolute; border: 2px solid #409eff; pointer-events: none; z-index: 100; }
+    .size-tip { position: fixed; padding: 2px 8px; font-size: 12px; color: #fff; background: rgba(64,158,255,0.9); border-radius: 4px; pointer-events: none; z-index: 200; white-space: nowrap; }
+    .toolbar { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: rgba(0,0,0,0.75); border-radius: 6px; z-index: 300; font-size: 13px; color: #fff; }
+    .toolbar button { padding: 4px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; background: rgba(255,255,255,0.15); color: #fff; }
+    .toolbar button:hover { background: rgba(255,255,255,0.3); }
+    .toolbar button.primary { background: #409eff; }
+    .toolbar button.primary:hover { background: #66b1ff; }
+  </style>
+</head>
+<body>
+  <div id="crossH" class="cross-h" style="display:none"></div>
+  <div id="crossV" class="cross-v" style="display:none"></div>
+  <div id="maskTop" class="mask mask-top" style="display:none"></div>
+  <div id="maskBottom" class="mask mask-bottom" style="display:none"></div>
+  <div id="maskLeft" class="mask mask-left" style="display:none"></div>
+  <div id="maskRight" class="mask mask-right" style="display:none"></div>
+  <div id="selBorder" class="sel-border" style="display:none"></div>
+  <div id="sizeTip" class="size-tip" style="display:none"></div>
+  <div id="toolbar" class="toolbar" style="display:none">
+    <span id="sizeLabel"></span>
+    <button id="btnReset">重新选择</button>
+    <button id="btnConfirm" class="primary">确认截图</button>
+    <button id="btnCancel">取消</button>
+  </div>
+
+  <script>
+    (function () {
+      const api = window.electronAPI
+      let sx, sy, cx, cy, isDragging = false, hasSelection = false
+      let selX, selY, selW, selH
+
+      const $ = id => document.getElementById(id)
+
+      function showSelection (show) {
+        ['maskTop','maskBottom','maskLeft','maskRight','selBorder','sizeTip'].forEach(id => {
+          $(id).style.display = show ? '' : 'none'
+        })
+      }
+      function showCross (show) {
+        $('crossH').style.display = show ? '' : 'none'
+        $('crossV').style.display = show ? '' : 'none'
+      }
+      function showToolbar (show) {
+        $('toolbar').style.display = show ? 'flex' : 'none'
+      }
+      function render () {
+        if (!hasSelection && !isDragging) { showSelection(false); showCross(false); showToolbar(false); return }
+        showSelection(true)
+        showCross(isDragging)
+        if (isDragging) {
+          const x = Math.min(sx, cx), y = Math.min(sy, cy)
+          const w = Math.abs(cx - sx), h = Math.abs(cy - sy)
+          $('selBorder').style.cssText = 'position:absolute;border:2px solid #409eff;pointer-events:none;z-index:100;left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px'
+          $('maskTop').style.height = y + 'px'
+          $('maskBottom').style.top = (y + h) + 'px'
+          $('maskLeft').style.cssText = 'position:absolute;background:rgba(0,0,0,0.55);pointer-events:none;z-index:50;left:0;top:' + y + 'px;height:' + h + 'px;width:' + x + 'px'
+          $('maskRight').style.cssText = 'position:absolute;background:rgba(0,0,0,0.55);pointer-events:none;z-index:50;left:' + (x + w) + 'px;top:' + y + 'px;height:' + h + 'px'
+          $('crossH').style.top = cy + 'px'
+          $('crossV').style.left = cx + 'px'
+          const dw = Math.abs(cx - sx), dh = Math.abs(cy - sy)
+          if (dw > 0) {
+            $('sizeTip').style.cssText = 'position:fixed;padding:2px 8px;font-size:12px;color:#fff;background:rgba(64,158,255,0.9);border-radius:4px;pointer-events:none;z-index:200;white-space:nowrap;left:' + (Math.max(sx,cx)+8) + 'px;top:' + (Math.max(sy,cy)+8) + 'px'
+            $('sizeTip').textContent = dw + '×' + dh
+            $('sizeTip').style.display = ''
+          }
+        } else {
+          $('selBorder').style.cssText = 'position:absolute;border:2px solid #409eff;pointer-events:none;z-index:100;left:' + selX + 'px;top:' + selY + 'px;width:' + selW + 'px;height:' + selH + 'px'
+          $('maskTop').style.height = selY + 'px'
+          $('maskBottom').style.top = (selY + selH) + 'px'
+          $('maskLeft').style.cssText = 'position:absolute;background:rgba(0,0,0,0.55);pointer-events:none;z-index:50;left:0;top:' + selY + 'px;height:' + selH + 'px;width:' + selX + 'px'
+          $('maskRight').style.cssText = 'position:absolute;background:rgba(0,0,0,0.55);pointer-events:none;z-index:50;left:' + (selX + selW) + 'px;top:' + selY + 'px;height:' + selH + 'px'
+          $('sizeTip').style.display = 'none'
+          $('sizeLabel').textContent = '已选择 ' + Math.round(selW) + '×' + Math.round(selH)
+        }
+        showToolbar(hasSelection)
+      }
+
+      window.addEventListener('mousedown', function (e) {
+        if (e.target.closest('.toolbar')) return
+        hasSelection = false; isDragging = true
+        sx = e.clientX; sy = e.clientY; cx = e.clientX; cy = e.clientY
+        render()
+      })
+      let rafId = null
+      window.addEventListener('mousemove', function (e) {
+        if (!isDragging) return
+        cx = e.clientX; cy = e.clientY
+        if (rafId) return
+        rafId = requestAnimationFrame(function () { rafId = null; render() })
+      })
+      window.addEventListener('mouseup', function () {
+        if (!isDragging) return
+        isDragging = false
+        const x = Math.min(sx, cx), y = Math.min(sy, cy)
+        const w = Math.abs(cx - sx), h = Math.abs(cy - sy)
+        if (w < 5 || h < 5) { hasSelection = false; render(); return }
+        selX = x; selY = y; selW = w; selH = h
+        hasSelection = true
+        render()
+      })
+      window.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') api.send('selection:cancel')
+      })
+      $('btnReset').onclick = function (e) {
+        console.log('[SEL] btnReset clicked', e)
+        hasSelection = false
+        render()
+      }
+      $('btnCancel').onclick = function (e) {
+        console.log('[SEL] btnCancel clicked', e)
+        api.send('selection:cancel')
+      }
+      $('btnConfirm').onclick = function (e) {
+        console.log('[SEL] btnConfirm clicked', e)
+        api.send('selection:confirm', {
+          x: Math.round(selX), y: Math.round(selY),
+          width: Math.round(selW), height: Math.round(selH)
+        })
+      }
+    })()
+  </script>
+</body>
+</html>

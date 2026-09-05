@@ -1,0 +1,22 @@
+[
+  { "id": "beijing", "name": "Beijing", "country": "China", "latitude": 39.9042, "longitude": 116.4074, "woeid": 1880251 },
+  { "id": "shanghai", "name": "Shanghai", "country": "China", "latitude": 31.2304, "longitude": 121.4737, "woeid": 1025093 },
+  { "id": "guangzhou", "name": "Guangzhou", "country": "China", "latitude": 23.1291, "longitude": 113.2644, "woeid": 1808990 },
+  { "id": "shenzhen", "name": "Shenzhen", "country": "China", "latitude": 22.5431, "longitude": 114.0579, "woeid": 1808982 },
+  { "id": "chengdu", "name": "Chengdu", "country": "China", "latitude": 30.5728, "longitude": 104.0668, "woeid": 1815255 },
+  { "id": "hangzhou", "name": "Hangzhou", "country": "China", "latitude": 30.2741, "longitude": 120.1551, "woeid": 1814996 },
+  { "id": "nanjing", "name": "Nanjing", "country": "China", "latitude": 32.0603, "longitude": 118.7969, "woeid": 1809008 },
+  { "id": "wuhan", "name": "Wuhan", "country": "China", "latitude": 30.5928, "longitude": 114.3055, "woeid": 1815331 },
+  { "id": "tianjin", "name": "Tianjin", "country": "China", "latitude": 39.3434, "longitude": 117.3616, "woeid": 1808974 },
+  { "id": "chongqing", "name": "Chongqing", "country": "China", "latitude": 29.5630, "longitude": 106.5516, "woeid": 1814996 },
+  { "id": "tokyo", "name": "Tokyo", "country": "Japan", "latitude": 35.6762, "longitude": 139.6503, "woeid": 1118370 },
+  { "id": "osaka", "name": "Osaka", "country": "Japan", "latitude": 34.6937, "longitude": 135.5023, "woeid": 1186883 },
+  { "id": "seoul", "name": "Seoul", "country": "South Korea", "latitude": 37.5665, "longitude": 126.9780, "woeid": 1132516 },
+  { "id": "newyork", "name": "New York", "country": "United States", "latitude": 40.7128, "longitude": -74.0060, "woeid": 2459115 },
+  { "id": "losangeles", "name": "Los Angeles", "country": "United States", "latitude": 34.0522, "longitude": -118.2437, "woeid": 2442047 },
+  { "id": "chicago", "name": "Chicago", "country": "United States", "latitude": 41.8781, "longitude": -87.6298, "woeid": 2379574 },
+  { "id": "london", "name": "London", "country": "United Kingdom", "latitude": 51.5074, "longitude": -0.1278, "woeid": 44418 },
+  { "id": "paris", "name": "Paris", "country": "France", "latitude": 48.8566, "longitude": 2.3522, "woeid": 615702 },
+  { "id": "sydney", "name": "Sydney", "country": "Australia", "latitude": -33.8688, "longitude": 151.2093, "woeid": 1105779 },
+  { "id": "singapore", "name": "Singapore", "country": "Singapore", "latitude": 1.3521, "longitude": 103.8198, "woeid": 1062617 }
+]

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 设备无关标签，禁止用户缩放（桌面应用不需要） -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- CSP 由主进程 window-manager.js 通过响应头统一注入，避免 meta 与响应头取交集导致策略过严 -->
+    <title>Starst Desk</title>
+  </head>
+  <body>
+    <!-- Vue 应用挂载点 -->
+    <div id="app"></div>
+    <!-- Vite 入口脚本：开发环境由 Vite 注入，生产环境由构建生成 -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

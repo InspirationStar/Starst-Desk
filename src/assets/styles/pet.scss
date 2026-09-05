@@ -1,0 +1,206 @@
+// ============================================================
+// 桌宠专用样式
+// 定义 CSS 自定义属性：颜色、圆角、间距、字号、动画时长
+// 浅色/深色双主题，通过 html.dark 选择器覆盖
+// 关键：html, body 必须透明，让透明窗口下 SVG 角色直接浮于桌面
+// ============================================================
+
+// ============================================================
+// 全局基础样式：html / body 必须透明
+// 桌宠窗口 transparent: true，任何不透明背景都会遮挡 SVG 角色
+// ============================================================
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  overflow: hidden;
+}
+
+// 挂载点撑满窗口，避免 .pet-root height:100% 解析为 0
+#pet-app {
+  width: 100%;
+  height: 100%;
+}
+
+// ============================================================
+// SCSS 编译期常量（仅用于本文件内部计算）
+// 对齐 widget.scss 的 Motion / Radius / Spacing / Font 令牌
+// ============================================================
+// 圆角
+$pet-radius-small: 6px;    // 小圆角：工具栏按钮
+$pet-radius-medium: 10px;  // 中圆角：气泡
+$pet-radius-large: 14px;   // 大圆角：气泡外层
+$pet-radius-pill: 999px;   // 胶囊圆角
+
+// 间距
+$pet-spacing-xs: 4px;
+$pet-spacing-sm: 8px;
+$pet-spacing-md: 12px;
+$pet-spacing-lg: 16px;
+
+// 字号
+$pet-font-title: 13px;
+$pet-font-body: 12px;
+$pet-font-caption: 11px;
+
+// 动画时长
+$pet-motion-faster: 83ms;    // 按钮反馈
+$pet-motion-fast: 167ms;     // 工具栏显隐
+$pet-motion-normal: 250ms;   // 气泡显隐
+$pet-motion-slow: 400ms;     // 大范围过渡
+
+// ============================================================
+// CSS 自定义属性：浅色模式默认值
+// 命名前缀 --pet-，与桌宠专用主题对齐
+// ============================================================
+:root {
+  // 桌宠表面
+  --pet-bg: rgba(255, 255, 255, 0.72);          // 气泡背景（半透明 + 毛玻璃）
+  --pet-bg-solid: #FFFFFF;                       // 不透明背景回退
+  --pet-text: #1A1A1A;                           // 主文字
+  --pet-text-secondary: #5A5A5A;                 // 次要文字
+  --pet-text-tertiary: #8A8A8A;                  // 辅助文字
+  --pet-divider: rgba(0, 0, 0, 0.08);            // 分割线
+  --pet-stroke: rgba(0, 0, 0, 0.08);             // 描边
+
+  // 工具栏
+  --pet-toolbar-bg: rgba(255, 255, 255, 0.72);   // 工具栏背景（毛玻璃）
+  --pet-toolbar-stroke: rgba(0, 0, 0, 0.08);     // 工具栏描边
+  --pet-toolbar-btn-bg: transparent;             // 按钮默认背景
+  --pet-toolbar-btn-hover: rgba(0, 0, 0, 0.06);  // 按钮悬停
+  --pet-toolbar-btn-active: rgba(0, 0, 0, 0.10); // 按钮按下
+  --pet-toolbar-btn-icon: #5A5A5A;               // 按钮图标颜色
+
+  // 强调色（用于置顶高亮、提醒类型图标）
+  --pet-accent: #0067C0;
+  --pet-accent-soft: rgba(0, 103, 192, 0.12);
+
+  // 提醒类型色
+  --pet-type-water: #4CC2FF;       // 喝水
+  --pet-type-sit: #F5A623;         // 久坐
+  --pet-type-eye: #9B59B6;         // 护眼
+  --pet-type-sleep: #5C6BC0;       // 睡眠
+  --pet-type-default: #67C23A;     // 默认
+
+  // 阴影
+  --pet-shadow-bubble: 0 4px 16px rgba(0, 0, 0, 0.10);
+  --pet-shadow-toolbar: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  // 圆角
+  --pet-radius-small: #{$pet-radius-small};
+  --pet-radius-medium: #{$pet-radius-medium};
+  --pet-radius-large: #{$pet-radius-large};
+  --pet-radius-pill: #{$pet-radius-pill};
+
+  // 间距
+  --pet-spacing-xs: #{$pet-spacing-xs};
+  --pet-spacing-sm: #{$pet-spacing-sm};
+  --pet-spacing-md: #{$pet-spacing-md};
+  --pet-spacing-lg: #{$pet-spacing-lg};
+
+  // 字号
+  --pet-font-title: #{$pet-font-title};
+  --pet-font-body: #{$pet-font-body};
+  --pet-font-caption: #{$pet-font-caption};
+
+  // 动画时长
+  --pet-motion-faster: #{$pet-motion-faster};
+  --pet-motion-fast: #{$pet-motion-fast};
+  --pet-motion-normal: #{$pet-motion-normal};
+  --pet-motion-slow: #{$pet-motion-slow};
+
+  // 工具栏按钮尺寸
+  --pet-toolbar-btn-size: 28px;
+  // 气泡最大宽度（需小于窗口宽度 200px，留出边距）
+  --pet-bubble-max-width: 180px;
+}
+
+// ============================================================
+// 深色模式覆盖
+// ============================================================
+html.dark {
+  --pet-bg: rgba(37, 38, 39, 0.78);
+  --pet-bg-solid: #252627;
+  --pet-text: #F5F5F5;
+  --pet-text-secondary: #A5A5A5;
+  --pet-text-tertiary: #8A8A8A;
+  --pet-divider: rgba(255, 255, 255, 0.10);
+  --pet-stroke: rgba(255, 255, 255, 0.10);
+
+  --pet-toolbar-bg: rgba(37, 38, 39, 0.78);
+  --pet-toolbar-stroke: rgba(255, 255, 255, 0.10);
+  --pet-toolbar-btn-bg: transparent;
+  --pet-toolbar-btn-hover: rgba(255, 255, 255, 0.08);
+  --pet-toolbar-btn-active: rgba(255, 255, 255, 0.12);
+  --pet-toolbar-btn-icon: #C0C4CC;
+
+  --pet-accent: #4CC2FF;
+  --pet-accent-soft: rgba(76, 194, 255, 0.18);
+
+  --pet-type-water: #4CC2FF;
+  --pet-type-sit: #FFB74D;
+  --pet-type-eye: #BA68C8;
+  --pet-type-sleep: #7986CB;
+  --pet-type-default: #81C784;
+
+  --pet-shadow-bubble: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --pet-shadow-toolbar: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+// ============================================================
+// 桌宠根容器基础样式
+// 透明背景，让 SVG 角色直接浮于桌面
+// pointer-events: none 让透明区域不响应鼠标，只有角色/工具栏/气泡响应
+//   子元素需显式设置 pointer-events: auto 才能响应鼠标事件
+//   这样窗口扩大到 800px 后，透明区域不会拦截桌面点击
+// ============================================================
+.pet-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  // 透明背景：让透明窗口下 SVG 角色直接浮于桌面
+  background: transparent !important;
+  color: var(--pet-text);
+  // 文字抗锯齿
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  // 禁止文字选中（桌宠为装饰性元素）
+  -webkit-user-select: none;
+  user-select: none;
+  // 透明区域不响应鼠标事件，只有角色/工具栏/气泡响应
+  // 子元素需显式设置 pointer-events: auto
+  pointer-events: none;
+}
+
+// 子元素显式设置 pointer-events: auto，覆盖 .pet-root 的 none
+// 否则 elementFromPoint 会跳过这些元素，导致 isMouseOnInteractive 总是返回 false
+.pet-root__character,
+.pet-root__toolbar,
+.pet-root__bubble,
+.pet-root__chat-panel {
+  pointer-events: auto;
+}
+
+// 角色容器不裁剪 SVG 超出部分（星环、螺旋等动画超出 viewBox）
+.pet-root__character {
+  overflow: visible;
+}
+
+// ============================================================
+// 全局动画关键帧
+// 各状态动画在 PetCharacter.vue scoped 中通过状态 class 引用
+// 此处仅定义通用关键帧，便于复用
+// ============================================================
+
+// 尊重用户偏好：减少动效时禁用所有桌宠动画
+@media (prefers-reduced-motion: reduce) {
+  .pet-root *,
+  .pet-root *::before,
+  .pet-root *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

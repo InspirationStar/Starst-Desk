@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 设备无关标签，禁止用户缩放（灵动岛不需要缩放） -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- CSP 由主进程 island-window-manager.js 通过响应头统一注入，避免 meta 与响应头取交集导致策略过严 -->
+    <title>Starst Desk Island</title>
+    <!-- 灵动岛窗口根节点透明：让透明窗口下 Fluent Design 卡片直接浮于桌面 -->
+    <style>
+      html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: transparent !important; overflow: hidden; }
+      #island-app { width: 100%; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <!-- 灵动岛 Vue 应用挂载点 -->
+    <div id="island-app"></div>
+    <!-- Vite 入口脚本：开发环境由 Vite 注入，生产环境由构建生成 -->
+    <script type="module" src="/src/island-main.js"></script>
+  </body>
+</html>

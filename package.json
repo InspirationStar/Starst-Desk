@@ -1,0 +1,81 @@
+{
+  "name": "starst-desk",
+  "version": "1.0.0",
+  "description": "Starst Desk - Windows 11 桌面助手应用（便签提醒、定时任务、健康提醒、AI对话）",
+  "author": "Starst Team",
+  "license": "MIT",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .\"",
+    "dev:vite": "vite",
+    "dev:electron": "wait-on http://localhost:5173 && cross-env NODE_ENV=development electron .",
+    "build": "vite build",
+    "preview": "vite preview",
+    "dist": "vite build && electron-builder --publish never",
+    "dist:win": "vite build && electron-builder --win --x64 --publish never",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "postinstall:rebuild": "electron-rebuild -f -w better-sqlite3",
+    "test": "node --test tests/**/*.test.js",
+    "test:dao": "node --test tests/dao/**/*.test.js",
+    "test:core": "node --test tests/core/**/*.test.js",
+    "test:adapters": "node --test tests/adapters/**/*.test.js",
+    "test:utils": "node --test tests/utils/**/*.test.js",
+    "test:modules": "node --test tests/modules/**/*.test.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "dayjs": "^1.11.23",
+    "electron-log": "^5.4.4",
+    "highlight.js": "^11.12.0",
+    "koffi": "^3.1.6",
+    "markdown-it": "^15.0.0",
+    "quill": "^2.0.3"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.2.0",
+    "@element-plus/icons-vue": "^2.3.2",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "concurrently": "^10.0.5",
+    "cross-env": "^10.1.0",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.0",
+    "element-plus": "^2.14.5",
+    "esbuild": "^0.28.2",
+    "pinia": "^4.0.3",
+    "sass": "^1.103.1",
+    "unplugin-auto-import": "^21.1.0",
+    "unplugin-vue-components": "^32.1.0",
+    "uuid": "^14.0.2",
+    "vite": "^8.2.2",
+    "vue": "^3.5.41",
+    "vue-router": "^5.2.0",
+    "wait-on": "^9.1.0"
+  },
+  "build": {
+    "appId": "com.starst.desk",
+    "productName": "Starst Desk",
+    "directories": {
+      "output": "dist-electron",
+      "buildResources": "resources"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "resources/**/*",
+      "migrations/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "resources/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

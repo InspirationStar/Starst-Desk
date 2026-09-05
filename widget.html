@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 设备无关标签，禁止用户缩放（桌面小部件不需要） -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- CSP 由主进程 widget-window-manager.js 通过响应头统一注入，避免 meta 与响应头取交集导致策略过严 -->
+    <title>Starst Desk Widget</title>
+    <!-- 确保窗口根节点透明，让系统 Mica/Acrylic 材质透过 -->
+    <style>
+      html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <!-- 小部件 Vue 应用挂载点 -->
+    <div id="widget-app"></div>
+    <!-- Vite 入口脚本：开发环境由 Vite 注入，生产环境由构建生成 -->
+    <script type="module" src="/src/widget-main.js"></script>
+  </body>
+</html>

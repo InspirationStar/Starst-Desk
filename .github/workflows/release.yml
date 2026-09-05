@@ -1,0 +1,56 @@
+name: 构建发布
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - 'v*'
+      - 'Opensource*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: 构建安装包 (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装 pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 重新编译原生模块
+        run: pnpm rebuild
+
+      - name: 构建安装包
+        run: pnpm dist:win
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: starst-desk-win-x64
+          path: dist-electron/*.exe
+          retention-days: 30
+
+      - name: 发布 GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist-electron/*.exe
+          draft: false
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/') }}
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest' }}
+          name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '最新构建' }}
+          generate_release_notes: true

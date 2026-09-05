@@ -1,0 +1,43 @@
+# 依赖目录
+node_modules/
+
+# 构建输出
+dist/
+dist-electron/
+build/
+
+# 日志
+logs/
+*.log
+build-out.txt
+vite-build-log*.txt
+
+# 编辑器与系统文件
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# Electron 相关
+out/
+release/
+
+# better-sqlite3 编译产物
+build/Release/
+node_modules/better-sqlite3/build/
+
+# 测试覆盖率
+coverage/
+
+# 临时文件
+*.tmp
+*.bak
+_tmp_*.js
+

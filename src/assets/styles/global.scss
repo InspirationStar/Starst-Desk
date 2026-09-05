@@ -1,0 +1,1119 @@
+// ============================================================
+// 全局样式
+// 应用基础样式重置、全局通用样式、深色主题变量、滚动条美化、过渡动画
+// ============================================================
+
+// 重置默认样式
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  // 桌面应用字体优先级：微软雅黑 > Segoe UI > 苹方 > 思源黑体
+  font-family: 'Microsoft YaHei', 'Segoe UI', -apple-system, BlinkMacSystemFont,
+    'PingFang SC', 'Hiragino Sans GB', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif;
+  font-size: 14px;
+  color: #303133;
+  background-color: #f5f7fa;
+  // 平滑字体渲染
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  // 禁止文字选中（桌面应用习惯，输入框等可单独开启）
+  -webkit-user-select: none;
+  user-select: none;
+  // 禁止默认拖拽行为
+  -webkit-app-region: no-drag;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+// ============================================================
+// 滚动条样式美化
+// ============================================================
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c4cc;
+  border-radius: 4px;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #909399;
+  }
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+// 允许输入框、文本域、富文本编辑器文字选中
+input,
+textarea,
+[contenteditable='true'] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+// 链接样式
+a {
+  color: var(--el-color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #66b1ff;
+    text-decoration: underline;
+  }
+}
+
+// ============================================================
+// 全局过渡动画
+// ============================================================
+// 通用淡入淡出
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+// 滑入滑出（从右侧）
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-right-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+// ============================================================
+// 深色主题样式覆盖
+// 通过 html.dark 类切换（由 app-store.js 控制）
+// 覆盖范围：基础元素、Element Plus 组件、自定义组件、各业务页面
+// ============================================================
+html.dark {
+  color: #e5eaf3;
+  background-color: #1d1e1f;
+
+  // body 背景与文字色
+  body {
+    color: #e5eaf3;
+    background-color: #1d1e1f;
+  }
+
+  // 深色主题滚动条
+  ::-webkit-scrollbar-thumb {
+    background: #414243;
+
+    &:hover {
+      background: #555657;
+    }
+  }
+
+  // 深色主题链接
+  a {
+    color: #66b1ff;
+
+    &:hover {
+      color: #79bbff;
+    }
+  }
+
+  // ============================================================
+  // Element Plus 深色主题 CSS 变量覆盖
+  // ============================================================
+  --el-bg-color: #1d1e1f;
+  --el-bg-color-page: #1d1e1f;
+  --el-bg-color-overlay: #252627;
+  --el-text-color-primary: #e5eaf3;
+  --el-text-color-regular: #cfd3dc;
+  --el-text-color-secondary: #a3a6ad;
+  --el-text-color-placeholder: #8d9095;
+  --el-border-color: #414243;
+  --el-border-color-light: #414243;
+  --el-border-color-lighter: #363637;
+  --el-fill-color: #252627;
+  --el-fill-color-light: #252627;
+  --el-fill-color-blank: #1d1e1f;
+  // 注意：--el-color-primary 不在此硬编码，由 app-store.js applyAccentToDom 动态设置
+  // 保留 --el-color-primary-light-* / dark-2 派生变量也由 applyAccentToDom 计算
+  --el-color-success: #67c23a;
+  --el-color-warning: #e6a23c;
+  --el-color-danger: #f56c6c;
+  --el-color-info: #909399;
+  --el-mask-color: rgba(0, 0, 0, 0.7);
+  --el-box-shadow-light: 0 2px 12px rgba(0, 0, 0, 0.4);
+
+  // 自定义暗色模式变量
+  --health-enabled-bg: #1e3a1e;
+
+  // ============================================================
+  // Element Plus 组件深色覆盖
+  // ============================================================
+
+  // 菜单：侧边栏菜单深色背景
+  .el-menu {
+    background-color: #1d1e1f;
+    border-right-color: #414243;
+
+    .el-menu-item,
+    .el-sub-menu__title {
+      color: #cfd3dc;
+
+      &:hover {
+        background-color: #2a2b2c;
+      }
+
+      &.is-active {
+        color: var(--el-color-primary);
+        background-color: #2a2b2c;
+      }
+    }
+
+    .el-sub-menu .el-menu {
+      background-color: #18191a;
+    }
+  }
+
+  // 卡片
+  .el-card {
+    background-color: #252627;
+    border-color: #414243;
+    color: #e5eaf3;
+
+    .el-card__header {
+      border-bottom-color: #414243;
+      color: #e5eaf3;
+    }
+  }
+
+  // 对话框
+  .el-dialog {
+    background-color: #252627;
+    border-color: #414243;
+
+    .el-dialog__header {
+      border-bottom-color: #414243;
+    }
+
+    .el-dialog__title,
+    .el-dialog__body {
+      color: #e5eaf3;
+    }
+
+    .el-dialog__footer {
+      border-top-color: #414243;
+    }
+  }
+
+  // 表格
+  .el-table {
+    background-color: #252627;
+    color: #e5eaf3;
+
+    th.el-table__cell {
+      background-color: #1d1e1f;
+      color: #cfd3dc;
+      border-bottom-color: #414243;
+    }
+
+    td.el-table__cell {
+      background-color: #252627;
+      border-bottom-color: #363637;
+    }
+
+    // 交替行
+    tr.el-table__row--striped td.el-table__cell {
+      background-color: #212223;
+    }
+
+    // 悬浮行
+    tr:hover > td.el-table__cell {
+      background-color: #2a2b2c;
+    }
+
+    // 空数据
+    .el-table__empty-block {
+      background-color: #252627;
+    }
+
+    .el-table__inner-wrapper::before,
+    .el-table__border-left-patch {
+      background-color: #414243;
+    }
+  }
+
+  // 输入框、文本域、数字输入
+  .el-input__wrapper,
+  .el-textarea__inner {
+    background-color: #1d1e1f;
+    box-shadow: 0 0 0 1px #414243 inset;
+  }
+
+  .el-input__inner {
+    color: #e5eaf3;
+  }
+
+  .el-input.is-disabled .el-input__wrapper {
+    background-color: #252627;
+  }
+
+  // 选择器
+  .el-select__wrapper {
+    background-color: #1d1e1f;
+    box-shadow: 0 0 0 1px #414243 inset;
+  }
+
+  .el-select-dropdown {
+    background-color: #252627;
+    border-color: #414243;
+
+    .el-select-dropdown__item {
+      color: #cfd3dc;
+
+      &.hover,
+      &.is-hovering {
+        background-color: #2a2b2c;
+      }
+
+      &.is-selected {
+        color: var(--el-color-primary);
+      }
+    }
+  }
+
+  // 弹出层（popper、dropdown、popover）
+  .el-popper,
+  .el-dropdown-menu,
+  .el-popover.el-popper {
+    background-color: #252627;
+    border-color: #414243;
+    color: #e5eaf3;
+  }
+
+  .el-dropdown-menu__item {
+    color: #cfd3dc;
+
+    &:hover {
+      background-color: #2a2b2c;
+    }
+  }
+
+  // 分页
+  .el-pagination {
+    color: #cfd3dc;
+
+    .btn-prev,
+    .btn-next,
+    .el-pager li {
+      background-color: #252627;
+      color: #cfd3dc;
+
+      &:hover {
+        color: var(--el-color-primary);
+      }
+
+      &.is-active {
+        color: var(--el-color-primary);
+        background-color: #2a2b2c;
+      }
+    }
+  }
+
+  // 标签页
+  .el-tabs {
+    .el-tabs__header {
+      border-bottom-color: #414243;
+    }
+
+    .el-tabs__item {
+      color: #cfd3dc;
+
+      &.is-active {
+        color: var(--el-color-primary);
+      }
+    }
+
+    .el-tabs__nav-wrap::after {
+      background-color: #414243;
+    }
+
+    // border-card 风格
+    &.el-tabs--border-card {
+      background-color: #252627;
+      border-color: #414243;
+
+      .el-tabs__header {
+        background-color: #1d1e1f;
+        border-bottom-color: #414243;
+      }
+
+      .el-tabs__item.is-active {
+        background-color: #252627;
+      }
+    }
+  }
+
+  // 表单
+  .el-form-item__label {
+    color: #cfd3dc;
+  }
+
+  // 标签（el-tag）：暗色模式下使用半透明背景 + 浅色文字，避免亮色背景刺眼
+  .el-tag {
+    background-color: #252627;
+    border-color: #414243;
+    color: #cfd3dc;
+
+    // 各类型标签的暗色配色，参考 Element Plus 官方暗色主题
+    &.el-tag--primary {
+      background-color: rgba(64, 158, 255, 0.15);
+      border-color: rgba(64, 158, 255, 0.3);
+      color: #79bbff;
+    }
+
+    &.el-tag--success {
+      background-color: rgba(103, 194, 58, 0.15);
+      border-color: rgba(103, 194, 58, 0.3);
+      color: #85ce61;
+    }
+
+    &.el-tag--warning {
+      background-color: rgba(230, 162, 60, 0.15);
+      border-color: rgba(230, 162, 60, 0.3);
+      color: #ebb563;
+    }
+
+    &.el-tag--danger {
+      background-color: rgba(245, 108, 108, 0.15);
+      border-color: rgba(245, 108, 108, 0.3);
+      color: #f78989;
+    }
+
+    &.el-tag--info {
+      background-color: rgba(144, 147, 153, 0.15);
+      border-color: rgba(144, 147, 153, 0.3);
+      color: #a3a6ad;
+    }
+
+    // plain 风格：透明背景 + 边框色
+    &.is-plain {
+      background-color: transparent;
+
+      &.el-tag--primary {
+        color: #79bbff;
+        border-color: rgba(64, 158, 255, 0.4);
+      }
+
+      &.el-tag--success {
+        color: #85ce61;
+        border-color: rgba(103, 194, 58, 0.4);
+      }
+
+      &.el-tag--warning {
+        color: #ebb563;
+        border-color: rgba(230, 162, 60, 0.4);
+      }
+
+      &.el-tag--danger {
+        color: #f78989;
+        border-color: rgba(245, 108, 108, 0.4);
+      }
+
+      &.el-tag--info {
+        color: #a3a6ad;
+        border-color: rgba(144, 147, 153, 0.4);
+      }
+    }
+  }
+
+  // 单选 / 多选
+  .el-radio,
+  .el-checkbox {
+    color: #cfd3dc;
+  }
+
+  .el-radio-button__inner,
+  .el-radio__label,
+  .el-checkbox__label {
+    color: #cfd3dc;
+  }
+
+  .el-radio-button__inner {
+    background-color: #1d1e1f;
+    border-color: #414243;
+  }
+
+  .el-radio-button.is-active .el-radio-button__inner {
+    background-color: var(--el-color-primary);
+    border-color: var(--el-color-primary);
+    color: #ffffff;
+  }
+
+  // 开关
+  .el-switch__core {
+    background-color: #414243;
+    border-color: #414243;
+  }
+
+  // 分割线
+  .el-divider {
+    border-color: #414243;
+  }
+
+  .el-divider__text {
+    background-color: #252627;
+    color: #cfd3dc;
+  }
+
+  // 描述列表
+  .el-descriptions {
+    .el-descriptions__body {
+      background-color: #252627;
+    }
+
+    .el-descriptions__label,
+    .el-descriptions__content {
+      background-color: #1d1e1f;
+      color: #cfd3dc;
+      border-color: #414243;
+    }
+  }
+
+  // 空状态
+  .el-empty__description {
+    color: #a3a6ad;
+  }
+
+  // 提示框
+  .el-alert {
+    &.el-alert--info {
+      background-color: #2a2b2c;
+      color: #cfd3dc;
+    }
+
+    &.el-alert--warning {
+      background-color: #3a3027;
+      color: #e6a23c;
+    }
+
+    &.el-alert--error {
+      background-color: #3a2727;
+      color: #f56c6c;
+    }
+  }
+
+  // 工具提示
+  .el-tooltip__popper {
+    background-color: #252627;
+    color: #e5eaf3;
+    border-color: #414243;
+  }
+
+  // 时间/日期选择器
+  .el-time-panel,
+  .el-date-picker,
+  .el-time-picker,
+  .el-picker-panel {
+    background-color: #252627;
+    border-color: #414243;
+    color: #e5eaf3;
+
+    .el-time-spinner__item,
+    .el-date-table th,
+    .el-date-table td .el-date-table-cell__text {
+      color: #cfd3dc;
+    }
+
+    .el-time-spinner__item.is-active,
+    .el-date-table td.is-selected .el-date-table-cell__text {
+      color: var(--el-color-primary);
+    }
+  }
+
+  // 进度条
+  .el-progress-bar__outer {
+    background-color: #363637;
+  }
+
+  // ============================================================
+  // 自定义通用类名深色覆盖
+  // ============================================================
+
+  // 任务名称
+  .task-name {
+    color: #e5eaf3;
+  }
+
+  // 下次执行时间
+  .next-execute {
+    color: #66b1ff;
+  }
+
+  // 上次执行时间
+  .last-execute {
+    color: #a3a6ad;
+  }
+
+  // 空文本提示
+  .empty-text {
+    color: #6a6d75;
+  }
+
+  // 错误信息
+  .error-message {
+    color: #f78989;
+  }
+
+  // 任务列表页容器
+  .task-list-page {
+    color: #e5eaf3;
+  }
+
+  // 便签列表页容器
+  .note-list-view {
+    background: #1d1e1f;
+    color: #e5eaf3;
+  }
+
+  // 便签分组标题
+  .note-section__title {
+    color: #a3a6ad;
+
+    .el-icon {
+      color: #6a6d75;
+    }
+  }
+
+  // 右键菜单
+  .context-menu {
+    background: #252627;
+    border-color: #414243;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+    &__item {
+      color: #cfd3dc;
+
+      .el-icon {
+        color: #a3a6ad;
+      }
+
+      &:hover {
+        background: #2a2b2c;
+      }
+
+      &--danger {
+        color: #f78989;
+
+        .el-icon {
+          color: #f78989;
+        }
+
+        &:hover {
+          background: #3a2727;
+        }
+      }
+    }
+
+    &__divider {
+      background: #414243;
+    }
+  }
+
+  // ============================================================
+  // 便签卡片深色样式
+  // NoteCard.vue 已在 scoped style 中通过 html.dark 选择器适配
+  // 这里仅保留 NoteListView 中可能用到的 NoteCard 兼容样式
+  // ============================================================
+  .note-card {
+    border-color: rgba(255, 255, 255, 0.08);
+
+    &:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  // ============================================================
+  // 健康模块面板深色样式
+  // 使用 !important 覆盖 scoped 样式的硬编码颜色
+  // ============================================================
+  .health-config-view,
+  .health-stats-view {
+    color: #e5eaf3;
+
+    .page-title {
+      color: #e5eaf3 !important;
+    }
+
+    .page-subtitle {
+      color: #a3a6ad !important;
+    }
+  }
+
+  // 模块状态卡片
+  .module-status-card {
+    border-color: #414243 !important;
+
+    &:hover {
+      border-color: var(--el-color-primary);
+      box-shadow: 0 2px 12px rgba(64, 158, 255, 0.2);
+    }
+
+    &.enabled {
+      background-color: #1e3a1e !important;
+      border-color: #67c23a;
+    }
+
+    .module-name {
+      color: #e5eaf3 !important;
+    }
+  }
+
+  // 完成率卡片
+  .completion-item {
+    border-color: #414243 !important;
+
+    .completion-name {
+      color: #e5eaf3 !important;
+    }
+
+    .completion-detail {
+      color: #a3a6ad !important;
+    }
+  }
+
+  // 柱状图
+  .bar-chart {
+    .chart-container {
+      border-bottom-color: #414243 !important;
+    }
+
+    .bar-value {
+      color: #cfd3dc !important;
+    }
+
+    .bar-label {
+      color: #a3a6ad !important;
+    }
+
+    .chart-legend {
+      color: #cfd3dc !important;
+    }
+  }
+
+  // 单位提示、快速记录标签
+  .unit-hint,
+  .quick-label {
+    color: #a3a6ad !important;
+  }
+
+  // 今日进度信息
+  .today-progress {
+    .separator {
+      color: #6a6d75 !important;
+    }
+
+    .target {
+      color: #a3a6ad !important;
+    }
+  }
+
+  // 健康面板中的圆环 / 状态卡片
+  .status-circle,
+  .progress-circle {
+    border-color: #414243 !important;
+  }
+
+  // 倒计时圆环（久坐 / 护眼面板）
+  .countdown-circle {
+    background-color: #1a2a3a !important;
+
+    &.paused {
+      background-color: #2a2b2c !important;
+    }
+
+    &.warning {
+      background-color: #3a3027 !important;
+    }
+
+    .countdown-time {
+      color: #e5eaf3 !important;
+    }
+
+    .countdown-label {
+      color: #a3a6ad !important;
+    }
+  }
+
+  // 伸展运动面板
+  .action-card {
+    .action-name {
+      color: #e5eaf3 !important;
+    }
+
+    .action-desc {
+      color: #a3a6ad !important;
+    }
+  }
+
+  .action-detail {
+    .detail-desc {
+      color: #a3a6ad !important;
+    }
+
+    .detail-steps-title {
+      color: #e5eaf3 !important;
+    }
+
+    .detail-steps {
+      color: #cfd3dc !important;
+    }
+  }
+
+  // 饮食面板
+  .meal-item {
+    .meal-name {
+      color: #e5eaf3 !important;
+    }
+
+    .meal-time {
+      color: #a3a6ad !important;
+    }
+  }
+
+  .diary-card {
+    .diary-content {
+      color: #cfd3dc !important;
+    }
+  }
+
+  // 睡眠面板文字
+  .sleep-panel {
+    color: #cfd3dc !important;
+  }
+
+  // el-empty 空状态图片暗色适配（便签页面箱子 logo 等）
+  .el-empty__image {
+    // 对内置 SVG 图片应用反色+亮度调整，使其在深色背景上可见
+    svg {
+      filter: invert(1) brightness(0.85);
+    }
+
+    // 如果使用图片元素
+    img {
+      filter: invert(1) brightness(0.85);
+    }
+  }
+
+  // ============================================================
+  // AI 聊天界面深色样式
+  // ============================================================
+  .chat-view {
+    background: #1d1e1f;
+  }
+
+  .session-sidebar {
+    border-right-color: #414243;
+    background: #18191a;
+
+    .sidebar-header {
+      border-bottom-color: #414243;
+
+      .sidebar-title {
+        color: #e5eaf3;
+      }
+    }
+
+    .session-item {
+      &:hover {
+        background: #1e3a5a;
+      }
+
+      &.active {
+        background: #2a4a6a;
+      }
+
+      .session-title {
+        color: #e5eaf3;
+      }
+
+      .session-time {
+        color: #a3a6ad;
+      }
+    }
+
+    .empty-sessions {
+      color: #a3a6ad;
+    }
+  }
+
+  .chat-header {
+    border-bottom-color: #414243;
+    background: #252627;
+  }
+
+  .message-area {
+    background: #1d1e1f;
+
+    .empty-chat {
+      color: #a3a6ad;
+
+      h2 {
+        color: #cfd3dc;
+      }
+    }
+  }
+
+  .chat-input-area {
+    border-top-color: #414243;
+    background: #252627;
+  }
+
+  // 消息气泡
+  .message-bubble {
+    .message-header {
+      color: #a3a6ad;
+    }
+
+    .user-content {
+      background: #1e3a5a;
+      color: #e5eaf3;
+    }
+
+    .ai-content {
+      background: #252627;
+      color: #e5eaf3;
+    }
+
+    .empty-content {
+      color: #6a6d75;
+    }
+  }
+
+  // Markdown 渲染
+  .markdown-renderer {
+    color: #e5eaf3;
+
+    blockquote {
+      border-left-color: #414243;
+      background: #252627;
+      color: #cfd3dc;
+    }
+
+    table th,
+    table td {
+      border-color: #414243;
+    }
+
+    table th {
+      background: #252627;
+    }
+
+    code:not(.hljs) {
+      background: #2a2b2c;
+      color: #f0a060;
+    }
+
+    hr {
+      border-top-color: #414243;
+    }
+
+    a {
+      color: #66b1ff;
+    }
+  }
+
+  // AI 配置页
+  .ai-config-view {
+    background: #1d1e1f;
+
+    .page-title {
+      color: #e5eaf3;
+    }
+
+    .config-name {
+      color: #e5eaf3;
+
+      .provider-icon {
+        color: #a3a6ad;
+      }
+    }
+
+    .config-detail {
+      color: #a3a6ad;
+    }
+
+    .empty-state {
+      background: #252627;
+      color: #a3a6ad;
+
+      h3 {
+        color: #cfd3dc;
+      }
+
+      .preset-card h4 {
+        color: #e5eaf3;
+      }
+    }
+
+    .model-list-hint {
+      background: #1d1e1f;
+    }
+  }
+
+  // 模型选择器
+  .model-selector {
+    .option-icon {
+      color: #a3a6ad;
+    }
+
+    .empty-option {
+      color: #a3a6ad;
+    }
+  }
+
+  // ============================================================
+  // 设置页深色样式
+  // ============================================================
+  .settings-view {
+    .page-title {
+      color: #e5eaf3;
+    }
+
+    .page-subtitle {
+      color: #a3a6ad;
+    }
+
+    .settings-row__label,
+    .about-logo__name {
+      color: #e5eaf3;
+    }
+
+    .settings-row__desc,
+    .about-logo__version,
+    .about-footer {
+      color: #a3a6ad;
+    }
+  }
+
+  // ============================================================
+  // 提醒弹窗深色样式
+  // ============================================================
+  .reminder-popup__card {
+    background: #252627;
+    border-color: #414243;
+  }
+
+  .reminder-popup__content {
+    color: #e5eaf3;
+
+    .reminder-empty {
+      color: #6a6d75;
+    }
+  }
+
+  .reminder-popup__meta {
+    color: #a3a6ad;
+  }
+
+  .reminder-popup__footer {
+    border-top-color: #414243;
+    background: #1d1e1f;
+  }
+
+  // ============================================================
+  // 富文本编辑器深色样式
+  // ============================================================
+  .rich-text-editor {
+    border-color: #414243;
+    background: #1d1e1f;
+
+    .rich-text-toolbar {
+      border-bottom-color: #414243;
+      background: #252627;
+    }
+
+    .ql-editor.ql-blank::before {
+      color: #6a6d75;
+    }
+  }
+
+  // ============================================================
+  // 命令风险确认对话框内的警告文本
+  // ============================================================
+  .confirm-command .warning-text {
+    color: #e6a23c;
+  }
+}
+
+// ============================================================
+// 通用工具类
+// ============================================================
+// 文本溢出省略号（单行）
+.text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 文本溢出省略号（多行，需配合 -webkit-line-clamp）
+.text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+// 卡片基础样式
+.card-base {
+  background: var(--el-bg-color-overlay, #ffffff);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+// 页面通用容器
+.page-container {
+  width: 100%;
+  height: 100%;
+}
+
+// ============================================================
+
+// 标题栏拖拽区域辅助样式
+// -webkit-app-region: drag 使元素可拖拽移动窗口
+// -webkit-app-region: no-drag 使元素不参与拖拽（按钮等）
+// ============================================================
+.drag-region {
+  -webkit-app-region: drag;
+}
+
+.no-drag-region {
+  -webkit-app-region: no-drag;
+}

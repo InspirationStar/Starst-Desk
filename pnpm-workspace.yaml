@@ -1,0 +1,16 @@
+packages: []
+allowBuilds:
+  '@parcel/watcher': true
+  '@seorii/win32-displayconfig': true
+  better-sqlite3: true
+  electron: true
+  electron-acrylic-window: true
+  electron-winstaller: false
+  esbuild: true
+  koffi: false
+  lzma-native: true
+  vue-demi: true
+overrides:
+  esbuild: ^0.28.2
+  tar: ^7.5.21
+  builder-util-runtime: ^9.7.0
